@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Calender from '../pages/Calender';
 import Images from '../assets/Images';
 import AddTask from '../pages/AddTask';
-import {Button1} from './Button';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Tab = createBottomTabNavigator();
@@ -47,6 +46,7 @@ const Navbar = () => {
         component={AddTask}
         options={{
           title: 'Add Task',
+          tabBarStyle: { display: 'none' },
           tabBarIcon: ({color, size, focused}) => (
             <LinearGradient
               colors={['#667EEA', '#764BA2']}
