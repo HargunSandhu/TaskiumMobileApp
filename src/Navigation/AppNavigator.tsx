@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
 import Dashboard from '../pages/Dashboard';
 import Calender from '../pages/Calender';
 import Intro from '../pages/Intro';
@@ -24,35 +23,98 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Intro">
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="Calender" component={Calender} />
-        <Stack.Screen
-          name="Intro"
-          component={Intro}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="AddTask" component={AddTask} />
-        <Stack.Screen name="EditTask" component={EditTask} />
-        <Stack.Screen name="DailyTaskDetails" component={DailyTaskDetails} />
-        <Stack.Screen
-          name="PriorityTaskDetails"
-          component={PriorityTaskDetails}
-        />
-        <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        <Stack.Screen name="AccountCreated" component={AccountCreated} />
-        <Stack.Screen name="AddedTask" component={AddedTask} />
-        <Stack.Screen name="EditedTask" component={EditedTask} />
-        <Stack.Screen name="LoggedOut" component={LoggedOut} />
-        <Stack.Screen name="TaskDeleted" component={TaskDeleted} />
-        <Stack.Screen name="UpdatedPassword" component={UpdatedPassword} />
-        <Stack.Screen name="VerifiedEmail" component={VerifiedEmail} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator initialRouteName="Intro">
+      <Stack.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Calender"
+        component={Calender}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Intro"
+        component={Intro}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddTask"
+        component={AddTask}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="EditTask"
+        component={EditTask}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DailyTaskDetails"
+        component={DailyTaskDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="PriorityTaskDetails"
+        component={PriorityTaskDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AccountCreated"
+        component={AccountCreated}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddedTask"
+        component={AddedTask}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="EditedTask"
+        component={EditedTask}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="LoggedOut"
+        component={LoggedOut}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="TaskDeleted"
+        component={TaskDeleted}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="UpdatedPassword"
+        component={UpdatedPassword}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="VerifiedEmail"
+        component={VerifiedEmail}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
   );
 };
 

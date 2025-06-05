@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 16,
   },
   logo: {
     width: 302,
