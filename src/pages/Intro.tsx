@@ -21,7 +21,7 @@ const Intro = () => {
         Stay organized, focused, and in control — all in one simple app.
       </Text>
 
-      <Button1 text="Get Started" width="95%" height={64} onPress={() => navigation.navigate('SignIn')} />
+      <Button1 text="Get Started" width="100%" height={64} onPress={() => navigation.navigate('SignIn')} />
     </SafeAreaView>
   );
 };

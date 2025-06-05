@@ -1,17 +1,15 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import AppNavigator from './src/Navigation/AppNavigator';
-
 import {NavigationContainer} from '@react-navigation/native';
 
-import mainStyles from './src/mainStyles';
+import ResetPassword from './src/pages/Authentication/ResetPassword';
 
 const App = () => {
   return (
     <NavigationContainer>
      
         <AppNavigator />
-      
+        {/* <ResetPassword /> */}
     </NavigationContainer>
   );
 };
