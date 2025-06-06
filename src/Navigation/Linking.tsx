@@ -4,6 +4,7 @@ const linking = {
     screens: {
       Dashboard: 'login-callback',
       SignIn: 'sign-in',
+      ResetPassword: "reset-password",
     },
   },
 };

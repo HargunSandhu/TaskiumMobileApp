@@ -31,6 +31,8 @@
   <category android:name="android.intent.category.DEFAULT" />
   <category android:name="android.intent.category.BROWSABLE" />
   <data android:scheme="com.googleusercontent.apps.300286376607-vjdsv941mns4e04jlqpp8o18jt65clm8" android:host="login-callback" />
+  <data android:scheme="com.googleusercontent.apps.300286376607-vjdsv941mns4e04jlqpp8o18jt65clm8" android:host="reset-password" />
+
 </intent-filter>
 
 
