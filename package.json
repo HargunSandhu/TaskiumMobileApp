@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.49.10",
     "react": "19.0.0",
     "react-native": "0.79.2",
+    "react-native-app-auth": "^8.0.3",
     "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "^2.25.0",
     "react-native-linear-gradient": "^2.8.3",

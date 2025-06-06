@@ -3,12 +3,15 @@ import AppNavigator from './src/Navigation/AppNavigator';
 import {NavigationContainer} from '@react-navigation/native';
 
 import ResetPassword from './src/pages/Authentication/ResetPassword';
+import AuthRedirectHandler from './src/Navigation/AuthRedirectHandler';
+import linking from './src/Navigation/Linking';
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
      
-        <AppNavigator />
+      <AuthRedirectHandler />
+      <AppNavigator />
         {/* <ResetPassword /> */}
     </NavigationContainer>
   );

@@ -22,7 +22,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const signUp = async () => {
+  const handleSignUp = async () => {
     const {error} = await supabase.auth.signUp({email, password});
     if (error) Alert.alert(error.message);
     else Alert.alert('Check your email for confirmation!');
@@ -46,7 +46,7 @@ const SignUp = () => {
         onChangeText={setPassword}
       />
 
-      <Button1 text="Sign Up" onPress={signUp} />
+      <Button1 text="Sign Up" onPress={handleSignUp} />
 
       <View>
         <View style={AuthenticationStyles.row}>
