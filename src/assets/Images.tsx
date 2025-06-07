@@ -6,6 +6,8 @@ const Images = {
   plus: 'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//plus.png',
   googleIcon:
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//googleIcon.png',
+  successTick:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//successTick.png',
 };
 
 export default Images;
