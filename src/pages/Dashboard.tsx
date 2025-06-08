@@ -21,8 +21,7 @@ const Dashboard = () => {
         <Text>Hello User</Text>
         <Text style={{color: 'white'}}>{currentDate}</Text>
           </View>
-      <PrioritytTaskCard priority='Low' title='Task' dueDate='26 April 2025' />
-      <TasksComponent />
+      
     </SafeAreaView>
   );
 };
@@ -31,6 +30,7 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: '#0B0B0F',
     height: '100%',
+    
   },
 });
 

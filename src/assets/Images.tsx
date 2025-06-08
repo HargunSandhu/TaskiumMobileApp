@@ -8,6 +8,8 @@ const Images = {
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//googleIcon.png',
   successTick:
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//successTick.png',
+  bin: 'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//bin.png',
+  edit: 'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//edit.png',
 };
 
 export default Images;

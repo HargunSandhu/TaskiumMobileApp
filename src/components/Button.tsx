@@ -12,7 +12,7 @@ import type {DimensionValue, ViewStyle} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 type ButtonProps = {
-  text: string;
+  text?: string;
   width?: DimensionValue;
   height?: DimensionValue;
   onPress?: (event: GestureResponderEvent) => void;
@@ -44,30 +44,33 @@ const Button1 = ({
 };
 
 const Button2 = ({
-  text,
   onPress,
   imagePath,
-imageSize=30,
+  imageSize = 30,
+  width = 42,
+  height = 42,
 }: ButtonProps) => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onPress} style={styles.buttonPlain}>
-        <View style={styles.row}>
-          {imagePath && <Image source={{uri: imagePath}} style={{marginRight: 12}} width={imageSize} height={imageSize} />}
-          <Text style={styles.text}>{text}</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.iconButton, {width, height}]}>
+      {imagePath && (
+        <Image
+          source={{uri: imagePath}}
+          style={{width: imageSize, height: imageSize}}
+          resizeMode="contain"
+        />
+      )}
+    </TouchableOpacity>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 8,
-    // marginHorizontal: 6,
-    width: '100%',
   },
   gradient: {
     borderRadius: 8,
@@ -79,8 +82,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonPlain: {
-    width: '90%',
-    height: 64,
     backgroundColor: 'transparent',
     borderColor: '#9B7CF9',
     borderRadius: 12,
@@ -98,6 +99,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  iconButton: {
+    backgroundColor: 'transparent',
+    borderColor: '#9B7CF9',
+    borderWidth: 1,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
