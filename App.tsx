@@ -11,11 +11,11 @@ import TasksComponent from './src/components/TasksComponent';
 const App = () => {
   return (
     <NavigationContainer linking={linking}>
-      {/* <AuthRedirectHandler /> */}
-      {/* <AppNavigator /> */}
+      <AuthRedirectHandler />
+      <AppNavigator />
 
       {/* <Dashboard /> */}
-      <TasksComponent taskStatus={true} task='task' />
+      {/* <TasksComponent taskStatus={true} task='task' /> */}
     </NavigationContainer>
   );
 };

@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: 'space-between',
     alignItems: 'center',
+    
   },
   topSection: {
     alignItems: 'center',

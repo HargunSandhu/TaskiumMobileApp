@@ -26,9 +26,9 @@ const TasksComponent = ({taskStatus, task}: TasksComponentProps) => {
 
  
       <View style={styles.rightSection}>
-        <Button2 imagePath={Images.edit} width={42} height={42} />
+        <Button2 imagePath={Images.edit} width={45} height={42} />
         <View style={{width: 8}} /> 
-        <Button2 imagePath={Images.bin} width={42} height={42} />
+        <Button2 imagePath={Images.bin} width={45} height={42} />
       </View>
     </View>
   );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   taskText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 20,
     marginLeft: 12,
   },
   rightSection: {
