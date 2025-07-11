@@ -1,0 +1,20 @@
+export type RootStackParamList = {
+  Intro: undefined;
+  SignIn: undefined;
+  SignUp: undefined;
+  Dashboard: undefined;
+  Calender: undefined;
+  AddTask: undefined;
+  EditTask: undefined;
+  DailyTaskDetails: undefined;
+  PriorityTaskDetails: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: undefined;
+  AccountCreated: undefined;
+  AddedTask: undefined;
+  EditedTask: undefined;
+  LoggedOut: undefined;
+  TaskDeleted: undefined;
+  UpdatedPassword: undefined;
+  VerifiedEmail: undefined;
+};
