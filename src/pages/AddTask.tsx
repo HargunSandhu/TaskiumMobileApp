@@ -64,7 +64,70 @@ const AddTask = () => {
     setDatePickerModalState(true);
   };
 
-  const handleAddTask = () => {};
+  const handleAddTask = async () => {
+    if (!task) {
+      alert('Please enter a task name');
+      return;
+    }
+
+    if (taskType === 'priority' && (!priority || !dueDate)) {
+      alert('Please select a priority and due date');
+      return;
+    }
+
+    const user = await supabase.auth.getUser();
+
+    if (!user?.data?.user?.id) {
+      alert('User not authenticated');
+      return;
+    }
+
+    const userId = user.data.user.id;
+
+    const taskData = {
+      name: task,
+      type: taskType,
+      priority: taskType === 'priority' ? priority : null,
+      due_date:
+        taskType === 'priority' && dueDate ? dueDate.toISOString() : null,
+      description,
+      user_id: userId,
+    };
+
+    const {data: insertedTask, error: taskError} = await supabase
+      .from('tasks')
+      .insert([taskData])
+      .select()
+      .single();
+
+    if (taskError) {
+      console.error('Error inserting task:', taskError);
+      alert('Failed to add task');
+      return;
+    }
+
+    if (taskType === 'priority' && subtasks.length > 0) {
+      const formattedSubtasks = subtasks.map(sub => ({
+        name: sub.name,
+        completed: sub.completed,
+        task_id: insertedTask.id,
+        user_id: userId,
+      }));
+
+      const {error: subtaskError} = await supabase
+        .from('subtasks')
+        .insert(formattedSubtasks);
+
+      if (subtaskError) {
+        console.error('Error inserting subtasks:', subtaskError);
+        alert('Task added but failed to add subtasks');
+        return;
+      }
+    }
+
+    alert('Task added successfully!');
+    navigation.navigate('Dashboard');
+  };
 
   return (
     <SafeAreaView style={styles.main}>
@@ -310,3 +373,6 @@ const styles = StyleSheet.create({
 });
 
 export default AddTask;
+function alert(arg0: string) {
+  throw new Error('Function not implemented.');
+}
