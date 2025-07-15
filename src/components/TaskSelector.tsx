@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-const TaskSelector = () => {
-  const [selected, setSelected] = useState<'daily' | 'priority'>('daily');
+type TaskType = 'daily' | 'priority';
+
+interface TaskSelectorProps {
+  selected: TaskType;
+  setSelected: (value: TaskType) => void;
+}
+
+const TaskSelector = ({selected, setSelected}: TaskSelectorProps) => {
+  // const [selected, setSelected] = useState<'daily' | 'priority'>('daily');
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setSelected('daily')}>
         <View style={styles.option}>
           <Text
-            style={[styles.text, selected === 'daily' && styles.selectedText]}
-          >
+            style={[styles.text, selected === 'daily' && styles.selectedText]}>
             Daily Tasks
           </Text>
           {selected === 'daily' && (
             <LinearGradient
               colors={['#667EEA', '#764BA2']}
               style={styles.gradientLine}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
             />
           )}
         </View>
@@ -31,16 +37,15 @@ const TaskSelector = () => {
             style={[
               styles.text,
               selected === 'priority' && styles.selectedText,
-            ]}
-          >
+            ]}>
             Priority Tasks
           </Text>
           {selected === 'priority' && (
             <LinearGradient
               colors={['#667EEA', '#764BA2']}
               style={styles.gradientLine}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
             />
           )}
         </View>
@@ -54,8 +59,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    marginTop: 30,
+    marginTop: 15,
     width: '95%',
+    marginBottom: 25,
   },
   option: {
     alignItems: 'center',

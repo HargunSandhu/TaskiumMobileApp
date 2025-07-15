@@ -1,7 +1,9 @@
 const Images = {
   logo: 'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//logo.png',
-  calender:
-    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//calender.png',
+  calendar:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//calendar.png',
+  calendar2:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//calendar2.png',
   home: 'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//home.png',
   plus: 'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//plus.png',
   googleIcon:
@@ -14,6 +16,8 @@ const Images = {
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//hamburger.png',
   searchIcon:
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//searchIcon.png',
+  expandArrow:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//expandArrow.png',
 };
 
 export default Images;

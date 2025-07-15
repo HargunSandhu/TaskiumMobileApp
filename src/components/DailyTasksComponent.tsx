@@ -4,12 +4,12 @@ import CheckBox from '@react-native-community/checkbox';
 import {Button2} from './Button';
 import Images from '../assets/Images';
 
-type TasksComponentProps = {
+type DailyTasksComponentProps = {
   taskStatus: boolean;
   task: string;
 };
 
-const TasksComponent = ({taskStatus, task}: TasksComponentProps) => {
+const DailyTasksComponent = ({taskStatus, task}: DailyTasksComponentProps) => {
   const [isChecked, setIsChecked] = useState(taskStatus);
 
   return (
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TasksComponent;
+export default DailyTasksComponent;

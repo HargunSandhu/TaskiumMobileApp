@@ -1,9 +1,10 @@
 import React from 'react';
 import {StyleSheet, Text, Image, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// import type {BottomTabNavigationOptions} from '@react-navigation/bottom-tabs';
 import Dashboard from '../pages/Dashboard';
 
-import Calender from '../pages/Calender';
+import Calender from '../pages/Calendar';
 import Images from '../assets/Images';
 import AddTask from '../pages/AddTask';
 import LinearGradient from 'react-native-linear-gradient';
@@ -46,7 +47,7 @@ const Navbar = () => {
         component={AddTask}
         options={{
           title: 'Add Task',
-          tabBarStyle: { display: 'none' },
+          tabBarStyle: {display: 'none'},
           tabBarIcon: ({color, size, focused}) => (
             <LinearGradient
               colors={['#667EEA', '#764BA2']}
@@ -66,7 +67,7 @@ const Navbar = () => {
           tabBarIcon: ({color, size}) => (
             // <Icon name="calendar-outline" size={size} color={color} />
             <Image
-              source={{uri: Images.calender}}
+              source={{uri: Images.calendar}}
               style={styles.Icons}
               tintColor={color}
             />
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     height: 80,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: "column",
+    flexDirection: 'column',
     marginBottom: 55,
     borderRadius: 99,
   },
@@ -91,13 +92,16 @@ const styles = StyleSheet.create({
   addIcon: {
     width: 40,
     height: 40,
-   
+
     tintColor: '#fff',
   },
 
   Icons: {
     width: 40,
     height: 40,
+    marginTop: '65%',
+    resizeMode: 'contain',
+    // marginBottom: 0, // or marginBottom: 2
   },
 });
 

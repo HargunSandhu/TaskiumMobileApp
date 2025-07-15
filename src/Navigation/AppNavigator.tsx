@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Dashboard from '../pages/Dashboard';
-import Calender from '../pages/Calender';
+import Calender from '../pages/Calendar';
 import Intro from '../pages/Intro';
 import AddTask from '../pages/AddTask';
 import EditTask from '../pages/EditTask';
@@ -18,20 +18,21 @@ import LoggedOut from '../pages/Success/LoggedOut';
 import TaskDeleted from '../pages/Success/TaskDeleted';
 import UpdatedPassword from '../pages/Success/UpdatedPassword';
 import VerifiedEmail from '../pages/Success/VerifiedEmail';
+// import MainNavigator from './MainNavigator';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="Intro" >
+    <Stack.Navigator initialRouteName="Intro">
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Calender"
-        component={Calender}
+        name="Calendar"
+        component={Calendar}
         options={{headerShown: false}}
       />
       <Stack.Screen

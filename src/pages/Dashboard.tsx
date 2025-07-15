@@ -11,9 +11,11 @@ import {
 import Header from '../components/Header';
 
 import PrioritytTaskCard from '../components/PriorityTasksCard';
-import TasksComponent from '../components/TasksComponent';
+import TasksComponent from '../components/DailyTasksComponent';
 import Images from '../assets/Images';
 import TaskSelector from '../components/TaskSelector';
+import DailyTasksList from '../components/DailyTasksList';
+// import Navbar from '../components/Navbar';
 
 const Dashboard = () => {
   const date = new Date();
@@ -51,6 +53,7 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
       <TaskSelector />
+      <DailyTasksList />
     </SafeAreaView>
   );
 };
