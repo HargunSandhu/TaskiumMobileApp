@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -66,26 +67,26 @@ const AddTask = () => {
 
   const handleAddTask = async () => {
     if (!task) {
-      alert('Please enter a task name');
+      Alert.alert('Please enter a task name');
       return;
     }
 
     if (taskType === 'priority' && (!priority || !dueDate)) {
-      alert('Please select a priority and due date');
+      Alert.alert('Please select a priority and due date');
       return;
     }
 
     const user = await supabase.auth.getUser();
 
     if (!user?.data?.user?.id) {
-      alert('User not authenticated');
+      Alert.alert('User not authenticated');
       return;
     }
 
     const userId = user.data.user.id;
 
     const taskData = {
-      name: task,
+      task_name: task,
       type: taskType,
       priority: taskType === 'priority' ? priority : null,
       due_date:
@@ -102,14 +103,14 @@ const AddTask = () => {
 
     if (taskError) {
       console.error('Error inserting task:', taskError);
-      alert('Failed to add task');
+      Alert.alert('Failed to add task');
       return;
     }
 
     if (taskType === 'priority' && subtasks.length > 0) {
       const formattedSubtasks = subtasks.map(sub => ({
-        name: sub.name,
-        completed: sub.completed,
+        subtask_name: sub.name,
+        is_completed: sub.completed,
         task_id: insertedTask.id,
         user_id: userId,
       }));
@@ -120,12 +121,19 @@ const AddTask = () => {
 
       if (subtaskError) {
         console.error('Error inserting subtasks:', subtaskError);
-        alert('Task added but failed to add subtasks');
+        Alert.alert('Task added but failed to add subtasks');
         return;
       }
     }
 
-    alert('Task added successfully!');
+    Alert.alert('Task added successfully!');
+    setTask('');
+    setTaskType('daily');
+    setPriority(null);
+    setDueDate(null);
+    setDescription('');
+    setSubtasks([]);
+
     navigation.navigate('Dashboard');
   };
 
@@ -145,29 +153,33 @@ const AddTask = () => {
           placeholder="Enter Task"
           placeholderTextColor="#6E6E7A"
           onChangeText={setTask}
+          value={task}
         />
         <TaskSelector selected={taskType} setSelected={setTaskType} />
-        <Dropdown
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholder}
-          selectedTextStyle={styles.selectedText}
-          itemTextStyle={styles.itemText}
-          itemContainerStyle={styles.itemContainer}
-          data={priorityData}
-          labelField="label"
-          valueField="value"
-          placeholder="Priority"
-          value={priority}
-          onChange={item => setPriority(item.value)}
-          renderRightIcon={() => (
-            <Image source={{uri: Images.expandArrow}} style={styles.icon} />
-          )}
-          renderItem={(item, selected) => (
-            <View style={[styles.itemWrapper, selected && styles.itemSelected]}>
-              <Text style={styles.itemText}>{item.label}</Text>
-            </View>
-          )}
-        />
+        {taskType === 'priority' && (
+          <Dropdown
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholder}
+            selectedTextStyle={styles.selectedText}
+            itemTextStyle={styles.itemText}
+            itemContainerStyle={styles.itemContainer}
+            data={priorityData}
+            labelField="label"
+            valueField="value"
+            placeholder="Priority"
+            value={priority}
+            onChange={item => setPriority(item.value)}
+            renderRightIcon={() => (
+              <Image source={{uri: Images.expandArrow}} style={styles.icon} />
+            )}
+            renderItem={(item, selected) => (
+              <View
+                style={[styles.itemWrapper, selected && styles.itemSelected]}>
+                <Text style={styles.itemText}>{item.label}</Text>
+              </View>
+            )}
+          />
+        )}
 
         {taskType === 'priority' && (
           <View style={styles.dateContainer}>
@@ -212,6 +224,7 @@ const AddTask = () => {
           placeholder="Description"
           placeholderTextColor="#6E6E7A"
           onChangeText={setDescription}
+          value={description}
         />
 
         {taskType === 'priority' && (
@@ -373,6 +386,3 @@ const styles = StyleSheet.create({
 });
 
 export default AddTask;
-function alert(arg0: string) {
-  throw new Error('Function not implemented.');
-}

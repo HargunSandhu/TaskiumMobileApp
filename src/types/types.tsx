@@ -17,4 +17,5 @@ export type RootStackParamList = {
   TaskDeleted: undefined;
   UpdatedPassword: undefined;
   VerifiedEmail: undefined;
+  MainScreen: undefined;
 };

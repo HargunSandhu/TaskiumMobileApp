@@ -5,29 +5,30 @@ import {Button2} from './Button';
 import Images from '../assets/Images';
 
 type DailyTasksComponentProps = {
-  taskStatus: boolean;
-  task: string;
+  is_completed: boolean;
+  task_name: string;
 };
 
-const DailyTasksComponent = ({taskStatus, task}: DailyTasksComponentProps) => {
-  const [isChecked, setIsChecked] = useState(taskStatus);
-
+const DailyTasksComponent = ({
+  is_completed,
+  task_name,
+}: DailyTasksComponentProps) => {
+  const [isChecked, setIsChecked] = useState(is_completed);
+  console.log('Task prop:', task_name);
   return (
     <View style={styles.main}>
-
       <View style={styles.leftSection}>
         <CheckBox
           value={isChecked}
           onValueChange={setIsChecked}
           tintColors={{true: '#9B7CF9', false: '#4C4B50'}}
         />
-        <Text style={styles.taskText}>{task}</Text>
+        <Text style={styles.taskText}>{task_name}</Text>
       </View>
 
- 
       <View style={styles.rightSection}>
         <Button2 imagePath={Images.edit} width={45} height={42} />
-        <View style={{width: 8}} /> 
+        <View style={{width: 8}} />
         <Button2 imagePath={Images.bin} width={45} height={42} />
       </View>
     </View>

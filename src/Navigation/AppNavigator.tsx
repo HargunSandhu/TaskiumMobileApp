@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Dashboard from '../pages/Dashboard';
-import Calender from '../pages/Calendar';
+import Calendar from '../pages/Calendar';
 import Intro from '../pages/Intro';
 import AddTask from '../pages/AddTask';
 import EditTask from '../pages/EditTask';
@@ -18,6 +18,7 @@ import LoggedOut from '../pages/Success/LoggedOut';
 import TaskDeleted from '../pages/Success/TaskDeleted';
 import UpdatedPassword from '../pages/Success/UpdatedPassword';
 import VerifiedEmail from '../pages/Success/VerifiedEmail';
+import Navbar from '../components/Navbar';
 // import MainNavigator from './MainNavigator';
 
 const Stack = createNativeStackNavigator();
@@ -113,6 +114,11 @@ const AppNavigator = () => {
       <Stack.Screen
         name="VerifiedEmail"
         component={VerifiedEmail}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="MainScreen"
+        component={Navbar}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

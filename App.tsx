@@ -13,11 +13,11 @@ import Navbar from './src/components/Navbar';
 const App = () => {
   return (
     <NavigationContainer linking={linking}>
-      {/* <AuthRedirectHandler /> */}
-      {/* <AppNavigator /> */}
+      <AuthRedirectHandler />
+      <AppNavigator />
       {/* <MainNavigator /> */}
-      <Navbar />
-      
+      {/* <Navbar /> */}
+
       {/* <TasksComponent taskStatus={true} task='task' /> */}
     </NavigationContainer>
   );

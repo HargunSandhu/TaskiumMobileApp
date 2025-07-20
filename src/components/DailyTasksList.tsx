@@ -18,16 +18,35 @@ type Task = {
 const DailyTasksList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-
   const fetchTasks = async () => {
+    const {
+      data: {user},
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError) {
+      console.error('Error fetching user:', userError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (!user) {
+      console.warn('No user is currently signed in.');
+      setTasks([]); // Clear any tasks
+      setLoading(false);
+      return;
+    }
+
     const {data, error} = await supabase
       .from('tasks')
-      .select('*') 
+      .select('*')
+      .eq('user_id', user.id)
       .order('id', {ascending: true});
 
     if (error) {
       console.error('Error fetching tasks:', error.message);
     } else {
+      console.log('Fetched tasks:', data);
       setTasks(data as Task[]);
     }
 
@@ -50,8 +69,8 @@ const DailyTasksList = () => {
         tasks.map(task => (
           <DailyTasksComponent
             key={task.id}
-            task={task.task}
-            taskStatus={task.taskStatus}
+            task_name={task.task}
+            is_completed={task.taskStatus}
           />
         ))
       ) : (

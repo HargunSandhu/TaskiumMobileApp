@@ -1,14 +1,26 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
 import Header from '../components/Header';
-import { Button1 } from '../components/Button';
-import { useNavigation } from '@react-navigation/native'; 
+import {Button1} from '../components/Button';
+import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types';
+import {supabase} from '../lib/supaBaseClient';
 
 const Intro = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const {data} = await supabase.auth.getSession();
+      if (data.session) {
+        navigation.replace('MainScreen'); // Redirect if session exists
+      }
+    };
+
+    checkSession();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,7 +33,12 @@ const Intro = () => {
         Stay organized, focused, and in control — all in one simple app.
       </Text>
 
-      <Button1 text="Get Started" width="100%" height={64} onPress={() => navigation.navigate('SignIn')} />
+      <Button1
+        text="Get Started"
+        width="100%"
+        height={64}
+        onPress={() => navigation.navigate('SignIn')}
+      />
     </SafeAreaView>
   );
 };
@@ -35,7 +52,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: 'space-between',
     alignItems: 'center',
-    
   },
   topSection: {
     alignItems: 'center',
@@ -54,8 +70,8 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     textAlign: 'center',
     lineHeight: 28,
-    fontWeight: 600,
-    fontFamily: "Poppins",
+    fontWeight: '600',
+    fontFamily: 'Poppins',
   },
 });
 

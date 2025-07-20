@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -18,6 +18,8 @@ import DailyTasksList from '../components/DailyTasksList';
 // import Navbar from '../components/Navbar';
 
 const Dashboard = () => {
+  const [taskType, setTaskType] = useState<'daily' | 'priority'>('daily');
+
   const date = new Date();
   const currentDate = date.toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -52,8 +54,8 @@ const Dashboard = () => {
           <Image source={{uri: Images.searchIcon}} style={styles.searchIcon} />
         </TouchableOpacity>
       </View>
-      <TaskSelector />
-      <DailyTasksList />
+      <TaskSelector selected={taskType} setSelected={setTaskType} />
+      {taskType === 'daily' && <DailyTasksList />}
     </SafeAreaView>
   );
 };

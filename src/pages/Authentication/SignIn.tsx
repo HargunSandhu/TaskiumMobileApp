@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   Linking,
@@ -16,21 +16,23 @@ import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/types';
 import AuthenticationStyles from './AuthenticationStyles';
-import { supabase } from '../../lib/supaBaseClient';
+import {supabase} from '../../lib/supaBaseClient';
 import linking from '../../Navigation/Linking';
-
 
 const SignIn = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  const handleSignIn = async() => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) Alert.alert(error.message);
-        else Alert.alert('Signed In Successfully!');
-  }
+
+  const handleSignIn = async () => {
+    const {error} = await supabase.auth.signInWithPassword({email, password});
+    if (error) Alert.alert(error.message);
+    else {
+      Alert.alert('Signed In Successfully!');
+      navigation.navigate('MainScreen');
+    }
+  };
 
   const handleSignInGoogle = async () => {
     console.log('Pressed Google Sign-In');
@@ -59,7 +61,6 @@ const SignIn = () => {
       Alert.alert('OAuth Error', String(err));
     }
   };
-  
 
   return (
     <SafeAreaView style={AuthenticationStyles.main}>
@@ -75,15 +76,22 @@ const SignIn = () => {
       <TextInput
         placeholder="Password"
         placeholderTextColor="#6E6E7A"
-        style={[AuthenticationStyles.input, { marginBottom: 40 }]}
+        style={[AuthenticationStyles.input, {marginBottom: 40}]}
         onChangeText={setPassword}
       />
 
       <Button1 text="Sign In" onPress={handleSignIn} />
-      <Button2 text="Sign in with Google" imagePath={Images.googleIcon} onPress={handleSignInGoogle} />
+      <Button2
+        text="Sign in with Google"
+        imagePath={Images.googleIcon}
+        onPress={handleSignInGoogle}
+      />
 
       <View>
-        <TouchableOpacity onPress={() => {navigation.navigate("ForgotPassword")}}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ForgotPassword');
+          }}>
           <Text style={AuthenticationStyles.text}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -101,7 +109,5 @@ const SignIn = () => {
   );
 };
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});
 export default SignIn;
