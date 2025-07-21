@@ -7,14 +7,19 @@ import Images from '../assets/Images';
 type DailyTasksComponentProps = {
   is_completed: boolean;
   task_name: string;
+  task_id: string;
+  editFunction: (id: string) => void;
+  deleteFunction: (id: string) => void;
 };
-
 const DailyTasksComponent = ({
   is_completed,
   task_name,
+  task_id,
+  editFunction,
+  deleteFunction,
 }: DailyTasksComponentProps) => {
   const [isChecked, setIsChecked] = useState(is_completed);
-  console.log('Task prop:', task_name);
+
   return (
     <View style={styles.main}>
       <View style={styles.leftSection}>
@@ -27,9 +32,19 @@ const DailyTasksComponent = ({
       </View>
 
       <View style={styles.rightSection}>
-        <Button2 imagePath={Images.edit} width={45} height={42} />
+        <Button2
+          imagePath={Images.edit}
+          width={45}
+          height={42}
+          onPress={() => editFunction(task_id)} // ✅ wrap in arrow function
+        />
         <View style={{width: 8}} />
-        <Button2 imagePath={Images.bin} width={45} height={42} />
+        <Button2
+          imagePath={Images.bin}
+          width={45}
+          height={42}
+          onPress={() => deleteFunction(task_id)} // ✅ wrap in arrow function
+        />
       </View>
     </View>
   );
@@ -39,12 +54,13 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: '#1C1C26',
     padding: 12,
-    width: '90%',
+    width: '95%',
     borderRadius: 12,
     alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
   },
   leftSection: {
     flexDirection: 'row',

@@ -6,19 +6,20 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native';
-import DailyTasksComponent from './DailyTasksComponent';
+import PriorityTaskCard from './PriorityTasksCard';
 import {supabase} from '../lib/supaBaseClient';
 
 type Task = {
   id: string;
   task_name: string;
   is_completed: boolean;
+  priority: string;
+  due_date: string;
 };
 
-const DailyTasksList = () => {
+const PriorityTasksList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-
   const fetchTasks = async () => {
     const {
       data: {user},
@@ -42,7 +43,7 @@ const DailyTasksList = () => {
       .from('tasks')
       .select('*')
       .eq('user_id', user.id)
-      .eq('type', 'daily')
+      .eq('type', 'priority')
       .order('id', {ascending: true});
 
     if (error) {
@@ -65,26 +66,16 @@ const DailyTasksList = () => {
     );
   }
 
-  const handleEditTask = (taskId: string) => {};
-
-  const handleDeleteTask = async (taskId: string) => {
-    const {error} = await supabase.from('tasks').delete().eq('id', taskId);
-    if (error) {
-      console.log(error);
-    }
-    await fetchTasks();
-  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {tasks.length > 0 ? (
         tasks.map(task => (
-          <DailyTasksComponent
+          <PriorityTaskCard
             key={task.id}
             task_name={task.task_name}
-            task_id={task.id}
-            is_completed={task.is_completed}
-            editFunction={() => handleEditTask(task.id)}
-            deleteFunction={() => handleDeleteTask(task.id)}
+            // is_completed={task.is_completed}
+            priority={task.priority}
+            due_date={task.due_date}
           />
         ))
       ) : (
@@ -107,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DailyTasksList;
+export default PriorityTasksList;

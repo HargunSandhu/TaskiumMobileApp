@@ -15,6 +15,8 @@ import TasksComponent from '../components/DailyTasksComponent';
 import Images from '../assets/Images';
 import TaskSelector from '../components/TaskSelector';
 import DailyTasksList from '../components/DailyTasksList';
+import PriorityTaskCard from '../components/PriorityTasksCard';
+import PriorityTasksList from '../components/PriorityTaskList';
 // import Navbar from '../components/Navbar';
 
 const Dashboard = () => {
@@ -56,6 +58,7 @@ const Dashboard = () => {
       </View>
       <TaskSelector selected={taskType} setSelected={setTaskType} />
       {taskType === 'daily' && <DailyTasksList />}
+      {taskType === 'priority' && <PriorityTasksList />}
     </SafeAreaView>
   );
 };

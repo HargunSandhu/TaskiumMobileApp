@@ -24,6 +24,7 @@ const Navbar = () => {
           borderTopWidth: 1,
           borderTopColor: '#FFFFFF',
         },
+
         headerShown: false,
         tabBarShowLabel: false,
       }}>

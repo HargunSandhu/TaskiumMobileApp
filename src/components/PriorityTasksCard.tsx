@@ -3,32 +3,32 @@ import {View, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 type PriorityTaskCardProps = {
-  title?: string;
+  task_name?: string;
   priority?: string;
-  dueDate?: string;
+  due_date?: string;
   progress?: number;
 };
 
 const PriorityTaskCard = ({
-  title,
+  task_name,
   priority,
-  dueDate,
+  due_date,
   progress,
 }: PriorityTaskCardProps) => {
   const PriorityTag = () => {
     let color;
     let label;
-    if (priority=== 'Low') {
+    if (priority === 'low') {
       color = '#32D74B';
       label = 'Low Priority';
-    }
-    if (priority=== 'Medium') {
+    } else if (priority === 'medium') {
       color = '#FFD60A';
       label = 'Medium Priority';
-    } else if (priority=== 'High') {
+    } else if (priority === 'high') {
       color = '#FF3B30';
       label = 'High Priority';
     }
+    // console.log('priority:', priority);
 
     return (
       <View style={[styles.priorityTag, {borderColor: color}]}>
@@ -41,12 +41,24 @@ const PriorityTaskCard = ({
       <LinearGradient colors={['#00C9FF', '#9256F5']} style={styles.leftBar} />
 
       <View style={styles.content}>
-        <Text style={styles.heading}>{title}</Text>
+        <Text style={styles.heading}>{task_name}</Text>
         <PriorityTag />
-        <Text style={styles.date}>{dueDate}</Text>
+        <Text style={styles.date}>
+          {
+            <Text>
+              {due_date
+                ? new Date(due_date).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'No due date'}
+            </Text>
+          }
+        </Text>
 
         <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>{ progress}</Text>
+          <Text style={styles.progressText}>{progress}</Text>
           <View style={styles.progressBarBackground}>
             <LinearGradient
               colors={['#5282FF', '#A26BFE']}
@@ -67,10 +79,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C1C26',
     borderRadius: 16,
     padding: 16,
-    width: 310,
+    width: 330,
     height: 144,
-    marginLeft: 35,
+    // marginLeft: 35,
     alignItems: 'center',
+    marginBottom: 12,
   },
   leftBar: {
     width: 16,
@@ -94,6 +107,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     alignSelf: 'flex-start',
     marginBottom: 4,
+    // width: 90,
   },
   priorityText: {
     fontSize: 14,
