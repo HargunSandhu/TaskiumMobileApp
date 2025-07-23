@@ -8,16 +8,23 @@ import {
 } from 'react-native';
 import DailyTasksComponent from './DailyTasksComponent';
 import {supabase} from '../lib/supaBaseClient';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../types/types';
 
 type Task = {
   id: string;
   task_name: string;
   is_completed: boolean;
+  type: 'daily' | 'priority';
 };
 
 const DailyTasksList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, 'Dashboard'>>();
 
   const fetchTasks = async () => {
     const {
@@ -65,7 +72,9 @@ const DailyTasksList = () => {
     );
   }
 
-  const handleEditTask = (taskId: string) => {};
+  const handleEditTask = (taskId: string, taskType: 'daily' | 'priority') => {
+    navigation.navigate('EditTask', {taskId, taskType});
+  };
 
   const handleDeleteTask = async (taskId: string) => {
     const {error} = await supabase.from('tasks').delete().eq('id', taskId);
@@ -83,7 +92,7 @@ const DailyTasksList = () => {
             task_name={task.task_name}
             task_id={task.id}
             is_completed={task.is_completed}
-            editFunction={() => handleEditTask(task.id)}
+            editFunction={() => handleEditTask(task.id, task.type)}
             deleteFunction={() => handleDeleteTask(task.id)}
           />
         ))
