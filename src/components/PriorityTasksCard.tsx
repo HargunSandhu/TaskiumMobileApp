@@ -1,23 +1,35 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+
+type Subtask = {
+  id: string;
+  task_id: string;
+  name: string;
+  is_completed: boolean;
+};
 
 type PriorityTaskCardProps = {
   task_name?: string;
   priority?: string;
   due_date?: string;
-  progress?: number;
+  subtasks?: Subtask[];
 };
 
 const PriorityTaskCard = ({
   task_name,
   priority,
   due_date,
-  progress,
+  subtasks = [],
 }: PriorityTaskCardProps) => {
+  const completedCount = subtasks.filter(s => s.is_completed).length;
+  const total = subtasks.length;
+  const progress = total > 0 ? (completedCount / total) * 100 : 0;
+
   const PriorityTag = () => {
-    let color;
-    let label;
+    let color = '#999';
+    let label = 'No Priority';
+
     if (priority === 'low') {
       color = '#32D74B';
       label = 'Low Priority';
@@ -28,7 +40,6 @@ const PriorityTaskCard = ({
       color = '#FF3B30';
       label = 'High Priority';
     }
-    // console.log('priority:', priority);
 
     return (
       <View style={[styles.priorityTag, {borderColor: color}]}>
@@ -36,6 +47,7 @@ const PriorityTaskCard = ({
       </View>
     );
   };
+
   return (
     <View style={styles.card}>
       <LinearGradient colors={['#00C9FF', '#9256F5']} style={styles.leftBar} />
@@ -44,30 +56,30 @@ const PriorityTaskCard = ({
         <Text style={styles.heading}>{task_name}</Text>
         <PriorityTag />
         <Text style={styles.date}>
-          {
-            <Text>
-              {due_date
-                ? new Date(due_date).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })
-                : 'No due date'}
-            </Text>
-          }
+          {due_date
+            ? new Date(due_date).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })
+            : 'No due date'}
         </Text>
 
-        <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>{progress}</Text>
-          <View style={styles.progressBarBackground}>
-            <LinearGradient
-              colors={['#5282FF', '#A26BFE']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={[styles.progressBarFill, {width: progress}]}
-            />
+        {total > 0 ? (
+          <View style={styles.progressContainer}>
+            <Text style={styles.progressText}>{Math.round(progress)}%</Text>
+            <View style={styles.progressBarBackground}>
+              <LinearGradient
+                colors={['#5282FF', '#A26BFE']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={[styles.progressBarFill, {width: `${progress}%`}]}
+              />
+            </View>
           </View>
-        </View>
+        ) : (
+          <Text style={styles.noSubtasks}>No subtasks</Text>
+        )}
       </View>
     </View>
   );
@@ -81,7 +93,6 @@ const styles = StyleSheet.create({
     padding: 16,
     width: 330,
     height: 144,
-    // marginLeft: 35,
     alignItems: 'center',
     marginBottom: 12,
   },
@@ -107,7 +118,6 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     alignSelf: 'flex-start',
     marginBottom: 4,
-    // width: 90,
   },
   priorityText: {
     fontSize: 14,
@@ -138,6 +148,12 @@ const styles = StyleSheet.create({
   progressBarFill: {
     height: '100%',
     borderRadius: 8,
+  },
+  noSubtasks: {
+    color: '#AAA',
+    fontSize: 15,
+
+    fontStyle: 'italic',
   },
 });
 

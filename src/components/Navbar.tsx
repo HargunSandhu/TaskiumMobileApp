@@ -18,6 +18,7 @@ const Navbar = () => {
         tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: '#4C4B50',
 
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: '#111114',
           height: '8%',

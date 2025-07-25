@@ -83,6 +83,10 @@ const DailyTasksList = () => {
     }
     await fetchTasks();
   };
+
+  const handleDailyTaskDetails = (taskId: string) => {
+    navigation.navigate('DailyTaskDetails', {taskId});
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {tasks.length > 0 ? (
@@ -94,6 +98,7 @@ const DailyTasksList = () => {
             is_completed={task.is_completed}
             editFunction={() => handleEditTask(task.id, task.type)}
             deleteFunction={() => handleDeleteTask(task.id)}
+            dailyTaskDetails={() => handleDailyTaskDetails(task.id)}
           />
         ))
       ) : (

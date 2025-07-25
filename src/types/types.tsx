@@ -6,7 +6,7 @@ export type RootStackParamList = {
   Calender: undefined;
   AddTask: undefined;
   EditTask: {taskId: string; taskType: 'daily' | 'priority'};
-  DailyTaskDetails: undefined;
+  DailyTaskDetails: {taskId: string};
   PriorityTaskDetails: undefined;
   ForgotPassword: undefined;
   ResetPassword: undefined;

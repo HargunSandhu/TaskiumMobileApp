@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {Button2} from './Button';
 import Images from '../assets/Images';
@@ -10,6 +16,7 @@ type DailyTasksComponentProps = {
   task_id: string;
   editFunction: (id: string) => void;
   deleteFunction: (id: string) => void;
+  dailyTaskDetails: (id: string) => void;
 };
 const DailyTasksComponent = ({
   is_completed,
@@ -17,6 +24,7 @@ const DailyTasksComponent = ({
   task_id,
   editFunction,
   deleteFunction,
+  dailyTaskDetails,
 }: DailyTasksComponentProps) => {
   const [isChecked, setIsChecked] = useState(is_completed);
 
@@ -28,7 +36,9 @@ const DailyTasksComponent = ({
           onValueChange={setIsChecked}
           tintColors={{true: '#9B7CF9', false: '#4C4B50'}}
         />
-        <Text style={styles.taskText}>{task_name}</Text>
+        <TouchableOpacity onPress={() => dailyTaskDetails(task_id)}>
+          <Text style={styles.taskText}>{task_name}</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.rightSection}>
@@ -36,14 +46,14 @@ const DailyTasksComponent = ({
           imagePath={Images.edit}
           width={45}
           height={42}
-          onPress={() => editFunction(task_id)} // ✅ wrap in arrow function
+          onPress={() => editFunction(task_id)}
         />
         <View style={{width: 8}} />
         <Button2
           imagePath={Images.bin}
           width={45}
           height={42}
-          onPress={() => deleteFunction(task_id)} // ✅ wrap in arrow function
+          onPress={() => deleteFunction(task_id)}
         />
       </View>
     </View>

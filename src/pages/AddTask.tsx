@@ -258,7 +258,7 @@ const AddTask = () => {
         <Button2
           text="Close"
           onPress={() => {
-            navigation.navigate('Dashboard');
+            navigation.navigate('MainScreen');
           }}
         />
       </ScrollView>

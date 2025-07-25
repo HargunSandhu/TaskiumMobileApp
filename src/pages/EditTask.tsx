@@ -39,7 +39,7 @@ const EditTask = () => {
         .from('tasks')
         .select('*')
         .eq('id', taskId)
-        .single(); // fetch single row
+        .single();
 
       if (error) {
         console.error('Error fetching task:', error.message);
@@ -55,6 +55,23 @@ const EditTask = () => {
     fetchTask();
   }, []);
 
+  const handleEditTask = async () => {
+    const taskData = {
+      task_name: task,
+      type: taskType,
+      priority: taskType === 'priority' ? priority : null,
+      due_date:
+        taskType === 'priority' && dueDate ? dueDate.toISOString() : null,
+      description,
+    };
+    const {error} = await supabase
+      .from('tasks')
+      .update(taskData)
+      .eq('id', taskId);
+    if (error) {
+      console.log('Task update failed; ', error);
+    }
+  };
   return (
     <SafeAreaView style={styles.main}>
       <ScrollView
@@ -104,7 +121,7 @@ const EditTask = () => {
           onChangeText={setDescription}
           value={description}
         />
-        <Button1 text="Save" onPress={() => {}} />
+        <Button1 text="Save" onPress={handleEditTask} />
         <Button2
           text="Close"
           onPress={() => navigation.navigate('Dashboard')}
@@ -235,6 +252,7 @@ const styles = StyleSheet.create({
   // },
   option: {
     alignItems: 'center',
+    marginBottom: '5%',
   },
   gradientLine: {
     height: 8,
