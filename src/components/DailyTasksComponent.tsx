@@ -1,14 +1,9 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  Touchable,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {Button2} from './Button';
 import Images from '../assets/Images';
+import {supabase} from '../lib/supaBaseClient';
 
 type DailyTasksComponentProps = {
   is_completed: boolean;
@@ -18,6 +13,7 @@ type DailyTasksComponentProps = {
   deleteFunction: (id: string) => void;
   dailyTaskDetails: (id: string) => void;
 };
+
 const DailyTasksComponent = ({
   is_completed,
   task_name,
@@ -27,17 +23,40 @@ const DailyTasksComponent = ({
   dailyTaskDetails,
 }: DailyTasksComponentProps) => {
   const [isChecked, setIsChecked] = useState(is_completed);
+  const [loading, setLoading] = useState(false);
+
+  const handleCheck = async (newValue: boolean) => {
+    setIsChecked(newValue);
+    setLoading(true);
+    const {error} = await supabase
+      .from('tasks')
+      .update({is_completed: newValue})
+      .eq('id', task_id);
+
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Error', 'Failed to update task completion status.');
+      setIsChecked(!newValue); // revert on failure
+    }
+  };
 
   return (
     <View style={styles.main}>
       <View style={styles.leftSection}>
         <CheckBox
           value={isChecked}
-          onValueChange={setIsChecked}
+          onValueChange={handleCheck}
           tintColors={{true: '#9B7CF9', false: '#4C4B50'}}
+          disabled={loading}
         />
         <TouchableOpacity onPress={() => dailyTaskDetails(task_id)}>
-          <Text style={styles.taskText}>{task_name}</Text>
+          <Text
+            style={[styles.taskText, isChecked && styles.strikeThroughText]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {task_name}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -75,11 +94,17 @@ const styles = StyleSheet.create({
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   taskText: {
     color: '#FFFFFF',
     fontSize: 20,
     marginLeft: 12,
+    maxWidth: 180,
+  },
+  strikeThroughText: {
+    textDecorationLine: 'line-through',
+    color: '#808080',
   },
   rightSection: {
     flexDirection: 'row',

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {RootStackParamList} from '../../types/types';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {supabase} from '../../lib/supaBaseClient';
 import Header from '../../components/Header';
 import {Button1, Button2} from '../../components/Button';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type DailyTaskDetailsRouteProp = RouteProp<
   RootStackParamList,
@@ -15,11 +16,18 @@ const DailyTaskDetails = () => {
   const route = useRoute<DailyTaskDetailsRouteProp>();
   const {taskId} = route.params;
 
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, 'DailyTaskDetails'>
+    >();
+
   const [task, setTask] = useState('');
-  // const [task_Type, setTask_Type] = useState<'daily' | 'priority'>('daily');
   const [priority, setPriority] = useState(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [description, setDescription] = useState('');
+  const [isCompleted, setIsCompleted] = useState(false);
+  const taskType = 'daily';
+
   useEffect(() => {
     const fetchTask = async () => {
       const {data, error} = await supabase
@@ -35,25 +43,45 @@ const DailyTaskDetails = () => {
         setDescription(data.description || '');
         setPriority(data.priority || null);
         setDueDate(data.due_date ? new Date(data.due_date) : null);
+        setIsCompleted(data.is_completed);
       }
     };
 
     fetchTask();
   }, []);
+
   return (
     <SafeAreaView style={styles.main}>
       <ScrollView
         style={{width: '100%'}}
-        contentContainerStyle={{alignItems: 'center', paddingBottom: 100}}
+        contentContainerStyle={{alignItems: 'center', paddingBottom: 120}}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View style={styles.heading}>
+        <View style={styles.logo}>
           <Header />
         </View>
-        <Text style={styles.heading}>{task}</Text>
-        <Button1 text="Edit Task" />
-        <Button2 text="Close" />
+        <Text
+          style={[styles.heading, isCompleted && styles.strikeThroughText]}
+          numberOfLines={2}
+          ellipsizeMode="tail">
+          {task}
+        </Text>
+        <Text style={styles.subheading}>Description: </Text>
+        <Text style={styles.description}>
+          {description || 'No Description'}
+        </Text>
       </ScrollView>
+
+      <View style={styles.buttonContainer}>
+        <Button1
+          text="Edit Task"
+          onPress={() => navigation.navigate('EditTask', {taskId, taskType})}
+        />
+        <Button2
+          text="Close"
+          onPress={() => navigation.navigate('MainScreen')}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -76,8 +104,12 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '800',
     marginBottom: 40,
-    //   alignItems: 'flex-start',
-    textAlign: 'left',
+    alignSelf: 'flex-start',
+    paddingLeft: '5%',
+  },
+  strikeThroughText: {
+    textDecorationLine: 'line-through',
+    color: '#808080',
   },
   input: {
     width: '90%',
@@ -90,6 +122,30 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     marginBottom: 18,
+  },
+  subheading: {
+    color: '#fff',
+    alignSelf: 'flex-start',
+    paddingLeft: '5%',
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  description: {
+    color: '#fff',
+    alignSelf: 'flex-start',
+    paddingLeft: '15%',
+    fontSize: 22,
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#0B0B0F',
   },
 });
 
