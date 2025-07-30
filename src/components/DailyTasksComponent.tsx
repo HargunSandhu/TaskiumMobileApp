@@ -37,7 +37,7 @@ const DailyTasksComponent = ({
 
     if (error) {
       Alert.alert('Error', 'Failed to update task completion status.');
-      setIsChecked(!newValue); // revert on failure
+      setIsChecked(!newValue);
     }
   };
 

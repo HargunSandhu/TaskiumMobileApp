@@ -24,7 +24,9 @@ const DailyTasksList = () => {
   const [loading, setLoading] = useState(true);
 
   const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList, 'Dashboard'>>();
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, 'MainScreen'>
+    >();
 
   const fetchTasks = async () => {
     const {
@@ -88,7 +90,10 @@ const DailyTasksList = () => {
     navigation.navigate('DailyTaskDetails', {taskId});
   };
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}>
       {tasks.length > 0 ? (
         tasks.map(task => (
           <DailyTasksComponent

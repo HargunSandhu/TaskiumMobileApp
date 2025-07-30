@@ -1,10 +1,12 @@
 import React, {use, useEffect, useState} from 'react';
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import Header from '../components/Header';
@@ -16,6 +18,10 @@ import type {RootStackParamList} from '../types/types';
 import {supabase} from '../lib/supaBaseClient';
 import {Button1, Button2} from '../components/Button';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {Dropdown} from 'react-native-element-dropdown';
+import Images from '../assets/Images';
+import DatePicker from 'react-native-date-picker';
+import SubtaskItem from '../components/SubtasksItem';
 
 type EditTaskRouteProp = RouteProp<RootStackParamList, 'EditTask'>;
 
@@ -23,16 +29,31 @@ const EditTask = () => {
   const route = useRoute<EditTaskRouteProp>();
   const {taskId, taskType} = route.params;
 
+  type SubtaskType = {
+    id: string;
+    name: string;
+    completed: boolean;
+  };
+
+  const [subtasks, setSubtasks] = useState<SubtaskType[]>([]);
+
   const [task, setTask] = useState('');
   // const [task_Type, setTask_Type] = useState<'daily' | 'priority'>('daily');
-  const [priority, setPriority] = useState(null);
+  const [priority, setPriority] = useState<string>('');
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [description, setDescription] = useState('');
   const [type, setType] = useState<'daily' | 'priority'>(taskType);
 
+  const [datePickerModalState, setDatePickerModalState] = useState(false);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'EditTask'>>();
 
+  const priorityData = [
+    {label: 'High', value: 'high'},
+    {label: 'Medium', value: 'medium'},
+    {label: 'Low', value: 'low'},
+  ];
   useEffect(() => {
     const fetchTask = async () => {
       const {data, error} = await supabase
@@ -46,9 +67,28 @@ const EditTask = () => {
       } else if (data) {
         setTask(data.task_name);
         setDescription(data.description || '');
-        setPriority(data.priority || null);
+        setPriority(data.priority || '');
         setDueDate(data.due_date ? new Date(data.due_date) : null);
         setType(data.type);
+      }
+
+      // Fetch subtasks
+      const {data: subtaskData, error: subtaskError} = await supabase
+        .from('subtasks')
+        .select('*')
+        .eq('task_id', taskId);
+
+      if (subtaskError) {
+        console.error('Error fetching subtasks:', subtaskError.message);
+      } else {
+        // Map subtask_name to name
+        setSubtasks(
+          subtaskData.map(sub => ({
+            ...sub,
+            name: sub.subtask_name, // <-- Ensure 'name' is set
+            completed: sub.is_completed, // <-- Ensure 'completed' is set
+          })),
+        );
       }
     };
 
@@ -72,6 +112,30 @@ const EditTask = () => {
       console.log('Task update failed; ', error);
     }
   };
+
+  const handleToggleDateModal = () => {
+    setDatePickerModalState(true);
+  };
+
+  const handleSubtaskChange = (id: string, updates: Partial<SubtaskType>) => {
+    setSubtasks(prev =>
+      prev.map(subtask =>
+        subtask.id === id ? {...subtask, ...updates} : subtask,
+      ),
+    );
+  };
+
+  const handleSubtaskRemove = async (id: string) => {
+    console.log('Deleting subtask ID:', id);
+
+    const {error} = await supabase.from('subtasks').delete().eq('id', id);
+    if (error) {
+      console.error('Failed to delete subtask:', error.message);
+    } else {
+      setSubtasks(prev => prev.filter(sub => sub.id !== id));
+    }
+  };
+
   return (
     <SafeAreaView style={styles.main}>
       <ScrollView
@@ -103,14 +167,73 @@ const EditTask = () => {
         )}
 
         {taskType === 'priority' && (
-          <View style={styles.option}>
-            <Text style={[styles.text]}>Priority Tasks</Text>
-            <LinearGradient
-              colors={['#667EEA', '#764BA2']}
-              style={styles.gradientLine}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
+          <View style={{width: '100%', alignItems: 'center'}}>
+            <View style={styles.option}>
+              <Text style={[styles.text]}>Priority Tasks</Text>
+              <LinearGradient
+                colors={['#667EEA', '#764BA2']}
+                style={styles.gradientLine}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+              />
+            </View>
+            <Dropdown
+              style={styles.input}
+              placeholder="Priority"
+              placeholderStyle={styles.placeholder}
+              selectedTextStyle={styles.selectedText}
+              itemTextStyle={styles.itemText}
+              itemContainerStyle={styles.itemContainer}
+              data={priorityData}
+              labelField="label"
+              valueField="value"
+              value={priority}
+              onChange={item => setPriority(item.value)}
+              renderRightIcon={() => (
+                <Image source={{uri: Images.expandArrow}} style={styles.icon} />
+              )}
+              renderItem={(item, selected) => (
+                <View
+                  style={[styles.itemWrapper, selected && styles.itemSelected]}>
+                  <Text style={styles.itemText}>{item.label}</Text>
+                </View>
+              )}
             />
+            <View style={styles.dateContainer}>
+              <TouchableOpacity
+                onPress={handleToggleDateModal}
+                style={[styles.input, styles.dateInput]}>
+                <View style={styles.dateContent}>
+                  <Text
+                    style={dueDate ? styles.selectedText : styles.placeholder}>
+                    {dueDate
+                      ? dueDate.toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })
+                      : 'Due Date'}
+                  </Text>
+                  <Image source={{uri: Images.calendar2}} style={styles.icon} />
+                </View>
+              </TouchableOpacity>
+
+              <DatePicker
+                modal
+                open={datePickerModalState}
+                date={dueDate || new Date()}
+                onConfirm={date => {
+                  setDatePickerModalState(false);
+                  setDueDate(date);
+                }}
+                onCancel={() => setDatePickerModalState(false)}
+                mode="date"
+                buttonColor="#9B7CF9"
+                dividerColor="#9B7CF9"
+                theme="dark"
+                minimumDate={new Date()}
+              />
+            </View>
           </View>
         )}
 
@@ -121,6 +244,34 @@ const EditTask = () => {
           onChangeText={setDescription}
           value={description}
         />
+
+        {taskType === 'priority' && (
+          <View>
+            <View style={styles.row}>
+              <Text style={styles.subheading}>Subtasks</Text>
+              <View style={{flex: 0}}>
+                <Button1
+                  text="Add"
+                  width={100}
+                  height={42}
+                  // onPress={handleAddSubtask}
+                />
+              </View>
+            </View>
+
+            {subtasks.map(subtask => (
+              <SubtaskItem
+                key={subtask.id}
+                id={subtask.id}
+                name={subtask.name}
+                completed={subtask.completed}
+                onChange={handleSubtaskChange}
+                onRemove={handleSubtaskRemove}
+              />
+            ))}
+          </View>
+        )}
+
         <Button1 text="Save" onPress={handleEditTask} />
         <Button2
           text="Close"
@@ -259,6 +410,10 @@ const styles = StyleSheet.create({
     width: 84,
     borderRadius: 18,
     marginTop: 4,
+  },
+  selectedText: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
 });
 

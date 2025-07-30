@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 import PriorityTaskCard from './PriorityTasksCard';
 import {supabase} from '../lib/supaBaseClient';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../types/types';
 
 type SubTask = {
   id: string;
@@ -22,10 +25,14 @@ type Task = {
   is_completed: boolean;
   priority: string;
   due_date: string;
-  subtasks: SubTask[]; // ✅ Include subtasks in the task
+  subtasks: SubTask[];
 };
 
 const PriorityTasksList = () => {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, 'MainScreen'>
+    >();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +55,6 @@ const PriorityTasksList = () => {
       return;
     }
 
-    // Step 1: Fetch priority tasks
     const {data: taskData, error: taskError} = await supabase
       .from('tasks')
       .select('*')
@@ -62,7 +68,6 @@ const PriorityTasksList = () => {
       return;
     }
 
-    // Step 2: Fetch subtasks for each task
     const tasksWithSubtasks = await Promise.all(
       taskData.map(async task => {
         const {data: subtasks, error: subError} = await supabase
@@ -99,7 +104,10 @@ const PriorityTasksList = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}>
       {tasks.length > 0 ? (
         tasks.map(task => (
           <PriorityTaskCard
@@ -108,6 +116,10 @@ const PriorityTasksList = () => {
             priority={task.priority}
             due_date={task.due_date}
             subtasks={task.subtasks}
+            task_id={task.id}
+            priorityTaskDetails={() =>
+              navigation.navigate('PriorityTaskDetails', {taskId: task.id})
+            }
           />
         ))
       ) : (

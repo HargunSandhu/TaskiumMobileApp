@@ -43,13 +43,13 @@ const AddTask = () => {
 
   const [description, setDescription] = useState('');
 
-  const handleSubtaskChange = (id: number, updates: Partial<SubtaskType>) => {
+  const handleSubtaskChange = (id: string, updates: Partial<SubtaskType>) => {
     setSubtasks(prev =>
       prev.map(sub => (sub.id === id ? {...sub, ...updates} : sub)),
     );
   };
 
-  const handleSubtaskRemove = (id: number) => {
+  const handleSubtaskRemove = (id: string) => {
     setSubtasks(prev => prev.filter(sub => sub.id !== id));
   };
 
@@ -57,7 +57,7 @@ const AddTask = () => {
     const newId = subtasks.length + 1;
     setSubtasks(prev => [
       ...prev,
-      {id: newId, name: `Task ${newId}`, completed: false},
+      {id: String(newId), name: `Task ${newId}`, completed: false},
     ]);
   };
 

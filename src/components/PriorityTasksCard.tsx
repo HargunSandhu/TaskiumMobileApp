@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 type Subtask = {
@@ -10,10 +16,12 @@ type Subtask = {
 };
 
 type PriorityTaskCardProps = {
+  task_id: string;
   task_name?: string;
   priority?: string;
   due_date?: string;
   subtasks?: Subtask[];
+  priorityTaskDetails: (id: string) => void;
 };
 
 const PriorityTaskCard = ({
@@ -21,6 +29,8 @@ const PriorityTaskCard = ({
   priority,
   due_date,
   subtasks = [],
+  priorityTaskDetails,
+  task_id,
 }: PriorityTaskCardProps) => {
   const completedCount = subtasks.filter(s => s.is_completed).length;
   const total = subtasks.length;
@@ -53,7 +63,9 @@ const PriorityTaskCard = ({
       <LinearGradient colors={['#00C9FF', '#9256F5']} style={styles.leftBar} />
 
       <View style={styles.content}>
-        <Text style={styles.heading}>{task_name}</Text>
+        <TouchableOpacity onPress={() => priorityTaskDetails(task_id)}>
+          <Text style={styles.heading}>{task_name}</Text>
+        </TouchableOpacity>
         <PriorityTag />
         <Text style={styles.date}>
           {due_date
