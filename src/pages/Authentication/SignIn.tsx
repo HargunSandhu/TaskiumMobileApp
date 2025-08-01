@@ -85,6 +85,7 @@ const SignIn = () => {
         text="Sign in with Google"
         imagePath={Images.googleIcon}
         onPress={handleSignInGoogle}
+        width={'95%'}
       />
 
       <View>

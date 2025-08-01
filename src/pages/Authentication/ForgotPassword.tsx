@@ -12,17 +12,16 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  
+
   const handleForgotPassword = async () => {
     const {error} = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo:
         'com.googleusercontent.apps.300286376607-vjdsv941mns4e04jlqpp8o18jt65clm8:/reset-password',
     });
     if (error) {
-        console.log(error)
-    }
-    else {
-  Alert.alert("Success")
+      console.log(error);
+    } else {
+      Alert.alert('Success');
     }
   };
   return (
@@ -41,6 +40,7 @@ const ForgotPassword = () => {
         onPress={() => {
           navigation.navigate('SignIn');
         }}
+        width={'95%'}
       />
     </SafeAreaView>
   );

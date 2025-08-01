@@ -1,4 +1,4 @@
-import React, {use, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -85,8 +85,8 @@ const EditTask = () => {
         setSubtasks(
           subtaskData.map(sub => ({
             ...sub,
-            name: sub.subtask_name, // <-- Ensure 'name' is set
-            completed: sub.is_completed, // <-- Ensure 'completed' is set
+            name: sub.subtask_name,
+            completed: sub.is_completed,
           })),
         );
       }
@@ -104,13 +104,44 @@ const EditTask = () => {
         taskType === 'priority' && dueDate ? dueDate.toISOString() : null,
       description,
     };
-    const {error} = await supabase
+
+    const {error: taskError} = await supabase
       .from('tasks')
       .update(taskData)
       .eq('id', taskId);
-    if (error) {
-      console.log('Task update failed; ', error);
+
+    if (taskError) {
+      console.log('Task update failed:', taskError);
+      return;
     }
+
+    if (taskType === 'priority') {
+      const {
+        data: {user},
+      } = await supabase.auth.getUser();
+
+      const userId = user?.id;
+
+      const subtaskPayload = subtasks.map(sub => ({
+        id: sub.id,
+        task_id: taskId,
+        subtask_name: sub.name,
+        is_completed: sub.completed,
+        user_id: userId,
+      }));
+
+      const {error: subtaskError} = await supabase
+        .from('subtasks')
+        .upsert(subtaskPayload, {onConflict: 'id'});
+
+      if (subtaskError) {
+        console.error('Subtasks update failed:', subtaskError);
+        return;
+      }
+    }
+
+    console.log('Saved!');
+    navigation.navigate('Dashboard');
   };
 
   const handleToggleDateModal = () => {
@@ -137,10 +168,16 @@ const EditTask = () => {
   };
 
   const handleAddSubtask = async () => {
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
+
+    const userId = user?.id;
     const newSubtask = {
       task_id: taskId,
       subtask_name: 'New Subtask',
       is_completed: false,
+      user_id: userId,
     };
 
     const {data, error} = await supabase
@@ -416,12 +453,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
   },
-  // calendarIcon: {
-  //   width: 30,
-  //   height: 30,
-  //   tintColor: '#6E6E7A',
-  //   marginRight: 10,
-  // },
   option: {
     alignItems: 'center',
     marginBottom: '5%',

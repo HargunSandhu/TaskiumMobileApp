@@ -260,6 +260,7 @@ const AddTask = () => {
           onPress={() => {
             navigation.navigate('MainScreen');
           }}
+          width={'95%'}
         />
       </ScrollView>
     </SafeAreaView>
