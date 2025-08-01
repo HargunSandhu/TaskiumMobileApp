@@ -80,6 +80,7 @@ const DailyTaskDetails = () => {
         <Button2
           text="Close"
           onPress={() => navigation.navigate('MainScreen')}
+          width={'95%'}
         />
       </View>
     </SafeAreaView>
@@ -133,6 +134,7 @@ const styles = StyleSheet.create({
     right: 0,
     paddingVertical: 16,
     backgroundColor: '#0B0B0F',
+    alignItems: 'center',
   },
 });
 

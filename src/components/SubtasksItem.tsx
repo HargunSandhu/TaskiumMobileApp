@@ -62,9 +62,14 @@ const SubtaskItem = ({
 
       {!readOnly && (
         <View style={styles.rightSection}>
-          <TouchableOpacity onPress={() => onRemove(id)}>
-            <Button2 imagePath={Images.bin} width={45} height={42} />
-          </TouchableOpacity>
+          {/* <TouchableOpacity onPress={() => onRemove(id)}> */}
+          <Button2
+            imagePath={Images.bin}
+            width={45}
+            height={42}
+            onPress={() => onRemove(id)}
+          />
+          {/* </TouchableOpacity> */}
         </View>
       )}
     </View>

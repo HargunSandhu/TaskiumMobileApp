@@ -136,6 +136,26 @@ const EditTask = () => {
     }
   };
 
+  const handleAddSubtask = async () => {
+    const newSubtask = {
+      task_id: taskId,
+      subtask_name: 'New Subtask',
+      is_completed: false,
+    };
+
+    const {data, error} = await supabase
+      .from('subtasks')
+      .insert(newSubtask)
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error adding subtask:', error.message);
+    } else {
+      setSubtasks(prev => [...prev, {...data, name: data.subtask_name}]);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.main}>
       <ScrollView
@@ -254,7 +274,7 @@ const EditTask = () => {
                   text="Add"
                   width={100}
                   height={42}
-                  // onPress={handleAddSubtask}
+                  onPress={handleAddSubtask}
                 />
               </View>
             </View>
@@ -276,6 +296,7 @@ const EditTask = () => {
         <Button2
           text="Close"
           onPress={() => navigation.navigate('Dashboard')}
+          width={'95%'}
         />
       </ScrollView>
     </SafeAreaView>
