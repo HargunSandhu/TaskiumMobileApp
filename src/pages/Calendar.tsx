@@ -1,8 +1,17 @@
-import React from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Header from '../components/Header';
+import Images from '../assets/Images';
+import CalendarSlider from '../components/CalenderSlider';
 
 const Calendar = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const currentDate = selectedDate.toLocaleDateString('en-GB', {
+    month: 'long',
+    year: 'numeric',
+  });
+
   return (
     <View style={styles.main}>
       <ScrollView
@@ -10,10 +19,21 @@ const Calendar = () => {
         contentContainerStyle={{alignItems: 'center', paddingBottom: 100}}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View style={styles.logo}>
-          <Header />
-        </View>
+        <Header />
+
         <Text style={styles.heading}>Calendar</Text>
+
+        <View style={styles.row}>
+          <Image
+            source={{uri: Images.calendar2}}
+            height={40}
+            width={40}
+            tintColor={'#fff'}
+          />
+          <Text style={styles.text}>{currentDate}</Text>
+        </View>
+
+        <CalendarSlider onDateChange={setSelectedDate} />
       </ScrollView>
     </View>
   );
@@ -26,16 +46,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
   },
-  logo: {
-    marginTop: 10,
-    marginBottom: 10,
-  },
   heading: {
     fontFamily: 'Poppins',
     fontSize: 42,
     color: '#ffffff',
     fontWeight: '800',
     marginBottom: 40,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '45%',
+  },
+  text: {
+    color: '#ffffff',
+    fontSize: 24,
   },
 });
 

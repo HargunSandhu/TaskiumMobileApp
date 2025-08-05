@@ -18,6 +18,8 @@ const Images = {
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//searchIcon.png',
   expandArrow:
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//expandArrow.png',
+  gradientTick:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//gradientTick.png',
 };
 
 export default Images;

@@ -45,10 +45,25 @@ const SubtaskItem = ({
           tintColors={{true: '#9B7CF9', false: '#4C4B50'}}
         />
         {readOnly ? (
-          <Text style={styles.readOnlyText}>{name}</Text>
+          <Text
+            style={[
+              styles.readOnlyText,
+              completed && {
+                textDecorationLine: 'line-through',
+                color: '#808080',
+              },
+            ]}>
+            {name}
+          </Text>
         ) : (
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              completed && {
+                textDecorationLine: 'line-through',
+                color: '#808080',
+              },
+            ]}
             value={text}
             onChangeText={value => {
               setText(value);

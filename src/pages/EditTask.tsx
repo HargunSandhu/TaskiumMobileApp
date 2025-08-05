@@ -332,7 +332,7 @@ const EditTask = () => {
         <Button1 text="Save" onPress={handleEditTask} />
         <Button2
           text="Close"
-          onPress={() => navigation.navigate('Dashboard')}
+          onPress={() => navigation.navigate('MainScreen')}
           width={'95%'}
         />
       </ScrollView>
