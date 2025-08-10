@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Header from '../components/Header';
 import Images from '../assets/Images';
-import CalendarSlider from '../components/CalenderSlider';
+import CalendarSlider from '../components/CalendarSlider';
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -33,7 +33,7 @@ const Calendar = () => {
           <Text style={styles.text}>{currentDate}</Text>
         </View>
 
-        <CalendarSlider onDateChange={setSelectedDate} />
+        <CalendarSlider />
       </ScrollView>
     </View>
   );
