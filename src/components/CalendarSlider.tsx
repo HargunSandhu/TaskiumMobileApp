@@ -1,163 +1,123 @@
-import React, {useMemo, useRef} from 'react';
-import {View, Pressable} from 'react-native';
-import Animated, {
-  Extrapolation,
-  interpolate,
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
-import type {ICarouselInstance} from 'react-native-reanimated-carousel';
-import Carousel from 'react-native-reanimated-carousel';
+import React, {useState, useRef, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+} from 'react-native';
 
-const SCREEN_WIDTH = 360; // or Dimensions.get('window').width
-const VISIBLE_ITEMS = 5; // how many dates to show
-const ITEM_WIDTH = SCREEN_WIDTH / VISIBLE_ITEMS;
-const ITEM_HEIGHT = 70;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const VISIBLE_ITEMS = 5;
+const ITEM_SPACING = 8;
+const ITEM_WIDTH =
+  (SCREEN_WIDTH - ITEM_SPACING * (VISIBLE_ITEMS - 1)) / VISIBLE_ITEMS;
 
 function getDates(range: number) {
   const today = new Date();
   const dates = [];
+
   for (let i = -range; i <= range; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    dates.push(d);
+    const date = new Date();
+    date.setDate(today.getDate() + i);
+    dates.push(date);
   }
+
   return dates;
 }
 
-export default function CalendarSlider() {
-  const dates = useMemo(() => getDates(30), []);
-  const carouselRef = useRef<ICarouselInstance>(null);
+const CalendarSlider = ({
+  onMonthChange,
+}: {
+  onMonthChange?: (month: string) => void;
+}) => {
+  const [dates] = useState(() => getDates(90)); // 3 months before & after
+  const flatListRef = useRef<FlatList>(null);
+  const [activeIndex, setActiveIndex] = useState(Math.floor(dates.length / 2));
+
+  useEffect(() => {
+    const currentDate = dates[activeIndex];
+    const monthYear = currentDate.toLocaleDateString('en-GB', {
+      month: 'long',
+      year: 'numeric',
+    });
+    onMonthChange?.(monthYear);
+  }, [activeIndex]);
+
+  const handleSelect = (index: number) => {
+    setActiveIndex(index);
+    flatListRef.current?.scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 0.5, // centers the item
+    });
+  };
 
   return (
-    <View
-      style={{
-        paddingVertical: 20,
-        backgroundColor: '#0D0D0D',
-      }}>
-      <Carousel
-        ref={carouselRef}
-        loop={false}
-        style={{
-          width: SCREEN_WIDTH,
-          height: ITEM_HEIGHT,
-        }}
-        width={ITEM_WIDTH}
-        height={ITEM_HEIGHT}
+    <View style={{marginTop: 20}}>
+      <FlatList
+        ref={flatListRef}
+        horizontal
         data={dates}
-        defaultIndex={30} // keep this if you want today in center
-        mode="horizontal-stack"
-        modeConfig={{
-          snapDirection: 'left', // default is left, but will center items
-          stackInterval: ITEM_WIDTH,
+        showsHorizontalScrollIndicator={false}
+        initialScrollIndex={activeIndex}
+        getItemLayout={(data, index) => ({
+          length: ITEM_WIDTH + ITEM_SPACING,
+          offset: (ITEM_WIDTH + ITEM_SPACING) * index,
+          index,
+        })}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item, index}) => {
+          const isActive = index === activeIndex;
+          return (
+            <TouchableOpacity
+              style={[
+                styles.item,
+                {width: ITEM_WIDTH, marginRight: ITEM_SPACING},
+                isActive && styles.activeItem,
+              ]}
+              onPress={() => handleSelect(index)}>
+              <Text style={[styles.dateText, isActive && styles.activeDate]}>
+                {item.getDate()}
+              </Text>
+              <Text style={[styles.dayText, isActive && styles.activeDay]}>
+                {item.toLocaleDateString('en-GB', {weekday: 'short'})}
+              </Text>
+            </TouchableOpacity>
+          );
         }}
-        snapEnabled
-        pagingEnabled={false}
-        renderItem={({item, animationValue, index}) => (
-          <DateItem
-            animationValue={animationValue}
-            date={item}
-            onPress={() => {
-              carouselRef.current?.scrollTo({
-                index,
-                animated: true,
-              });
-            }}
-          />
-        )}
       />
     </View>
   );
-}
-
-interface DateItemProps {
-  animationValue: Animated.SharedValue<number>;
-  date: Date;
-  onPress?: () => void;
-}
-
-const DateItem: React.FC<DateItemProps> = ({animationValue, date, onPress}) => {
-  const translateY = useSharedValue(0);
-
-  const containerStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      animationValue.value,
-      [-1, 0, 1],
-      [0.7, 1, 0.7],
-      Extrapolation.CLAMP,
-    );
-
-    const backgroundColor = interpolateColor(
-      animationValue.value,
-      [-1, 0, 1],
-      ['transparent', '#6C63FF', 'transparent'],
-    );
-
-    return {
-      opacity,
-      backgroundColor,
-    };
-  }, [animationValue]);
-
-  const textStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      animationValue.value,
-      [-1, 0, 1],
-      [1, 1.25, 1],
-      Extrapolation.CLAMP,
-    );
-
-    const color = interpolateColor(
-      animationValue.value,
-      [-1, 0, 1],
-      ['#aaa', '#fff', '#aaa'],
-    );
-
-    return {
-      transform: [{scale}, {translateY: translateY.value}],
-      color,
-    };
-  }, [animationValue, translateY]);
-
-  const subTextStyle = useAnimatedStyle(() => {
-    const color = interpolateColor(
-      animationValue.value,
-      [-1, 0, 1],
-      ['#888', '#fff', '#888'],
-    );
-    return {color};
-  }, [animationValue]);
-
-  const onPressIn = () => {
-    translateY.value = withTiming(-8, {duration: 200});
-  };
-
-  const onPressOut = () => {
-    translateY.value = withTiming(0, {duration: 200});
-  };
-
-  return (
-    <Pressable onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut}>
-      <Animated.View
-        style={[
-          {
-            width: ITEM_WIDTH,
-            height: ITEM_HEIGHT,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 10,
-          },
-          containerStyle,
-        ]}>
-        <Animated.Text style={[{fontSize: 22, fontWeight: 'bold'}, textStyle]}>
-          {date.getDate()}
-        </Animated.Text>
-        <Animated.Text style={[{fontSize: 14}, subTextStyle]}>
-          {date.toLocaleString('en-US', {weekday: 'short'})}
-        </Animated.Text>
-      </Animated.View>
-    </Pressable>
-  );
 };
+
+const styles = StyleSheet.create({
+  item: {
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    backgroundColor: '#1A1A1A',
+  },
+  activeItem: {
+    backgroundColor: '#9B7CF9',
+  },
+  dateText: {
+    fontSize: 18,
+    color: '#ccc',
+  },
+  activeDate: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  dayText: {
+    fontSize: 12,
+    color: '#888',
+  },
+  activeDay: {
+    color: '#fff',
+  },
+});
+
+export default CalendarSlider;

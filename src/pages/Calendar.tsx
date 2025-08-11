@@ -5,12 +5,9 @@ import Images from '../assets/Images';
 import CalendarSlider from '../components/CalendarSlider';
 
 const Calendar = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const currentDate = selectedDate.toLocaleDateString('en-GB', {
-    month: 'long',
-    year: 'numeric',
-  });
+  const [currentMonthYear, setCurrentMonthYear] = useState(
+    new Date().toLocaleDateString('en-GB', {month: 'long', year: 'numeric'}),
+  );
 
   return (
     <View style={styles.main}>
@@ -29,11 +26,12 @@ const Calendar = () => {
             height={40}
             width={40}
             tintColor={'#fff'}
+            style={styles.icon}
           />
-          <Text style={styles.text}>{currentDate}</Text>
+          <Text style={styles.text}>{currentMonthYear}</Text>
         </View>
 
-        <CalendarSlider />
+        <CalendarSlider onMonthChange={setCurrentMonthYear} />
       </ScrollView>
     </View>
   );
@@ -56,8 +54,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '45%',
+    marginBottom: 20,
+  },
+  icon: {
+    marginRight: 12, // fixed gap between icon and month text
   },
   text: {
     color: '#ffffff',
