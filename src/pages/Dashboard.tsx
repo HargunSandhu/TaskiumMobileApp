@@ -10,14 +10,10 @@ import {
 } from 'react-native';
 import Header from '../components/Header';
 
-import PrioritytTaskCard from '../components/PriorityTasksCard';
-import TasksComponent from '../components/DailyTasksComponent';
 import Images from '../assets/Images';
 import TaskSelector from '../components/TaskSelector';
 import DailyTasksList from '../components/DailyTasksList';
-import PriorityTaskCard from '../components/PriorityTasksCard';
 import PriorityTasksList from '../components/PriorityTaskList';
-// import Navbar from '../components/Navbar';
 
 const Dashboard = () => {
   const [taskType, setTaskType] = useState<'daily' | 'priority'>('daily');
