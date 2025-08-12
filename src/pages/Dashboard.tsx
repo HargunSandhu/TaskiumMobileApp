@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import Header from '../components/Header';
-
 import Images from '../assets/Images';
 import TaskSelector from '../components/TaskSelector';
 import DailyTasksList from '../components/DailyTasksList';
@@ -17,6 +16,7 @@ import PriorityTasksList from '../components/PriorityTaskList';
 
 const Dashboard = () => {
   const [taskType, setTaskType] = useState<'daily' | 'priority'>('daily');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const date = new Date();
   const currentDate = date.toLocaleDateString('en-GB', {
@@ -24,11 +24,13 @@ const Dashboard = () => {
     month: 'long',
     year: 'numeric',
   });
+
   return (
     <SafeAreaView style={styles.main}>
       <View style={styles.logo}>
         <Header />
       </View>
+
       <View style={styles.topContainer}>
         <View style={styles.greetingContainer}>
           <Text style={styles.greeting}>Hello User</Text>
@@ -42,19 +44,28 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           placeholder="Search"
           placeholderTextColor="#6E6E7A"
           style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
         <TouchableOpacity>
           <Image source={{uri: Images.searchIcon}} style={styles.searchIcon} />
         </TouchableOpacity>
       </View>
+
+      {/* Task Type Selector */}
       <TaskSelector selected={taskType} setSelected={setTaskType} />
-      {taskType === 'daily' && <DailyTasksList />}
-      {taskType === 'priority' && <PriorityTasksList />}
+
+      {/* Render Tasks with Search Query */}
+      {taskType === 'daily' && <DailyTasksList searchQuery={searchQuery} />}
+      {taskType === 'priority' && (
+        <PriorityTasksList searchQuery={searchQuery} />
+      )}
     </SafeAreaView>
   );
 };
@@ -86,22 +97,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '85%',
   },
-  input: {
-    backgroundColor: '#16161D',
-    borderColor: '#23232B',
-    borderRadius: 8,
-    borderWidth: 1,
-    width: '90%',
-    height: 50,
-    color: '#fff',
-    marginTop: 20,
-    fontSize: 20,
-    paddingLeft: 14,
-  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#16161D',
     borderColor: '#23232B',
     borderWidth: 1,

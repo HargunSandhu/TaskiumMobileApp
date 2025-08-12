@@ -1,11 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Text,
-} from 'react-native';
+import {ScrollView, StyleSheet, ActivityIndicator, Text} from 'react-native';
 import PriorityTaskCard from './PriorityTasksCard';
 import {supabase} from '../lib/supaBaseClient';
 import {useNavigation} from '@react-navigation/native';
@@ -28,7 +22,11 @@ type Task = {
   subtasks: SubTask[];
 };
 
-const PriorityTasksList = () => {
+interface PriorityTasksListProps {
+  searchQuery: string;
+}
+
+const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
   const navigation =
     useNavigation<
       NativeStackNavigationProp<RootStackParamList, 'MainScreen'>
@@ -55,12 +53,18 @@ const PriorityTasksList = () => {
       return;
     }
 
-    const {data: taskData, error: taskError} = await supabase
+    let query = supabase
       .from('tasks')
       .select('*')
       .eq('user_id', user.id)
       .eq('type', 'priority')
       .order('id', {ascending: true});
+
+    if (searchQuery.trim() !== '') {
+      query = query.ilike('task_name', `%${searchQuery}%`);
+    }
+
+    const {data: taskData, error: taskError} = await query;
 
     if (taskError || !taskData) {
       console.error('Error fetching tasks:', taskError?.message);
@@ -95,7 +99,7 @@ const PriorityTasksList = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [searchQuery]); // refetch on search change
 
   if (loading) {
     return (

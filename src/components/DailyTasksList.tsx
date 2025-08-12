@@ -1,3 +1,4 @@
+// DailyTasksList.tsx
 import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
@@ -19,7 +20,11 @@ type Task = {
   type: 'daily' | 'priority';
 };
 
-const DailyTasksList = () => {
+interface DailyTasksListProps {
+  searchQuery: string;
+}
+
+const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,17 +52,22 @@ const DailyTasksList = () => {
       return;
     }
 
-    const {data, error} = await supabase
+    let query = supabase
       .from('tasks')
       .select('*')
       .eq('user_id', user.id)
       .eq('type', 'daily')
       .order('id', {ascending: true});
 
+    if (searchQuery.trim() !== '') {
+      query = query.ilike('task_name', `%${searchQuery}%`);
+    }
+
+    const {data, error} = await query;
+
     if (error) {
       console.error('Error fetching tasks:', error.message);
     } else {
-      console.log('Fetched tasks:', data);
       setTasks(data as Task[]);
     }
 
@@ -66,7 +76,7 @@ const DailyTasksList = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [searchQuery]); // refetch when searchQuery changes
 
   if (loading) {
     return (
@@ -89,6 +99,7 @@ const DailyTasksList = () => {
   const handleDailyTaskDetails = (taskId: string) => {
     navigation.navigate('DailyTaskDetails', {taskId});
   };
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
