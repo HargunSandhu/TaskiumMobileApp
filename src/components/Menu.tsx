@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types';
 import {supabase} from '../lib/supaBaseClient';
+import SuccessModal from './SuccessModal';
 
 type MainScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -15,6 +16,7 @@ type MainScreenNavigationProp = NativeStackNavigationProp<
 const AppMenu = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation<MainScreenNavigationProp>();
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const handleRefresh = () => {
     setMenuVisible(false);
@@ -27,7 +29,7 @@ const AppMenu = () => {
     if (error) {
       console.error('Error signing out:', error.message);
     } else {
-      navigation.replace('Intro');
+      setSuccessModalVisible(true);
     }
   };
 
@@ -56,6 +58,15 @@ const AppMenu = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+      <SuccessModal
+        visible={successModalVisible}
+        title="Signed Out"
+        message="You have been signed out."
+        onClose={() => {
+          setSuccessModalVisible(false);
+          navigation.navigate('Intro');
+        }}
+      />
     </View>
   );
 };

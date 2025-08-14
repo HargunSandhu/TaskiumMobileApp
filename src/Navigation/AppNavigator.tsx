@@ -11,13 +11,7 @@ import SignIn from '../pages/Authentication/SignIn';
 import SignUp from '../pages/Authentication/SignUp';
 import ForgotPassword from '../pages/Authentication/ForgotPassword';
 import ResetPassword from '../pages/Authentication/ResetPassword';
-import AccountCreated from '../pages/Success/AccountCreated';
-import AddedTask from '../pages/Success/AddedTask';
-import EditedTask from '../pages/Success/EditedTask';
-import LoggedOut from '../pages/Success/LoggedOut';
-import TaskDeleted from '../pages/Success/TaskDeleted';
-import UpdatedPassword from '../pages/Success/UpdatedPassword';
-import VerifiedEmail from '../pages/Success/VerifiedEmail';
+
 import Navbar from '../components/Navbar';
 // import MainNavigator from './MainNavigator';
 
@@ -81,41 +75,7 @@ const AppNavigator = () => {
         component={ResetPassword}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="AccountCreated"
-        component={AccountCreated}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddedTask"
-        component={AddedTask}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="EditedTask"
-        component={EditedTask}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="LoggedOut"
-        component={LoggedOut}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="TaskDeleted"
-        component={TaskDeleted}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="UpdatedPassword"
-        component={UpdatedPassword}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="VerifiedEmail"
-        component={VerifiedEmail}
-        options={{headerShown: false}}
-      />
+
       <Stack.Screen
         name="MainScreen"
         component={Navbar}

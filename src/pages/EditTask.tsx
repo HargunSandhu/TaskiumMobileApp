@@ -22,6 +22,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Images from '../assets/Images';
 import DatePicker from 'react-native-date-picker';
 import SubtaskItem from '../components/SubtasksItem';
+import SuccessModal from '../components/SuccessModal';
 
 type EditTaskRouteProp = RouteProp<RootStackParamList, 'EditTask'>;
 
@@ -45,7 +46,7 @@ const EditTask = () => {
   const [type, setType] = useState<'daily' | 'priority'>(taskType);
 
   const [datePickerModalState, setDatePickerModalState] = useState(false);
-
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'EditTask'>>();
 
@@ -140,8 +141,7 @@ const EditTask = () => {
       }
     }
 
-    console.log('Saved!');
-    navigation.navigate('Dashboard');
+    setSuccessModalVisible(true);
   };
 
   const handleToggleDateModal = () => {
@@ -328,7 +328,15 @@ const EditTask = () => {
             ))}
           </View>
         )}
-
+        <SuccessModal
+          visible={successModalVisible}
+          title="Task Edited"
+          message="The task has been edited."
+          onClose={() => {
+            setSuccessModalVisible(false);
+            navigation.navigate('MainScreen');
+          }}
+        />
         <Button1 text="Save" onPress={handleEditTask} />
         <Button2
           text="Close"

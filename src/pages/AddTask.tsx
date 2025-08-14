@@ -21,6 +21,7 @@ import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import type {RootStackParamList} from '../types/types';
 import {supabase} from '../lib/supaBaseClient';
 import DatePicker from 'react-native-date-picker';
+import SuccessModal from '../components/SuccessModal';
 
 const AddTask = () => {
   const priorityData = [
@@ -42,6 +43,7 @@ const AddTask = () => {
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const [description, setDescription] = useState('');
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const handleSubtaskChange = (id: string, updates: Partial<SubtaskType>) => {
     setSubtasks(prev =>
@@ -126,7 +128,8 @@ const AddTask = () => {
       }
     }
 
-    Alert.alert('Task added successfully!');
+    setSuccessModalVisible(true);
+
     setTask('');
     setTaskType('daily');
     setPriority(null);
@@ -134,7 +137,7 @@ const AddTask = () => {
     setDescription('');
     setSubtasks([]);
 
-    navigation.navigate('Dashboard');
+    // navigation.navigate('Dashboard');
   };
 
   return (
@@ -180,7 +183,6 @@ const AddTask = () => {
             )}
           />
         )}
-
         {taskType === 'priority' && (
           <View style={styles.dateContainer}>
             <TouchableOpacity
@@ -218,7 +220,6 @@ const AddTask = () => {
             />
           </View>
         )}
-
         <TextInput
           style={[styles.input, styles.description]}
           placeholder="Description"
@@ -226,7 +227,6 @@ const AddTask = () => {
           onChangeText={setDescription}
           value={description}
         />
-
         {taskType === 'priority' && (
           <View>
             <View style={styles.row}>
@@ -253,7 +253,15 @@ const AddTask = () => {
             ))}
           </View>
         )}
-
+        <SuccessModal
+          visible={successModalVisible}
+          title="Task Added"
+          message="New task has been added."
+          onClose={() => {
+            setSuccessModalVisible(false);
+            navigation.navigate('MainScreen');
+          }}
+        />
         <Button1 text="Add Task" onPress={handleAddTask} />
         <Button2
           text="Close"

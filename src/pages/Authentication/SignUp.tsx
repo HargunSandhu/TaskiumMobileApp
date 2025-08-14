@@ -15,19 +15,21 @@ import Header from '../../components/Header';
 import {Button1} from '../../components/Button';
 import AuthenticationStyles from './AuthenticationStyles';
 import {supabase} from '../../lib/supaBaseClient';
+import SuccessModal from '../../components/SuccessModal';
 
 const SignUp = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const handleSignUp = async () => {
     const {error} = await supabase.auth.signUp({email, password});
     if (error) Alert.alert(error.message);
     else {
-      Alert.alert('Check your email for confirmation!');
-      navigation.navigate('SignIn');
+      // Alert.alert('Check your email for confirmation!');
+      setSuccessModalVisible(true);
     }
   };
 
@@ -64,6 +66,16 @@ const SignUp = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <SuccessModal
+        visible={successModalVisible}
+        title="Signed Up"
+        message="You have signed up."
+        onClose={() => {
+          setSuccessModalVisible(false);
+          navigation.navigate('SignIn');
+        }}
+      />
     </SafeAreaView>
   );
 };

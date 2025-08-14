@@ -7,10 +7,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/types';
 import {useNavigation} from '@react-navigation/native';
 import {supabase} from '../../lib/supaBaseClient';
+import SuccessModal from '../../components/SuccessModal';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -35,7 +37,7 @@ const ResetPassword = () => {
       if (error) {
         Alert.alert(error.message);
       } else {
-        Alert.alert('Success');
+        setSuccessModalVisible(true);
       }
     } else {
       Alert.alert('Password not matched!');
@@ -59,6 +61,15 @@ const ResetPassword = () => {
         onChangeText={setConfirmPassword}
       />
       <Button1 text="Confirm" onPress={handleResetPassword} />
+      <SuccessModal
+        visible={successModalVisible}
+        title="Password Updated"
+        message="Password has been updated."
+        onClose={() => {
+          setSuccessModalVisible(false);
+          navigation.navigate('SignIn');
+        }}
+      />
     </SafeAreaView>
   );
 };

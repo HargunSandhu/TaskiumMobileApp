@@ -12,6 +12,7 @@ import {supabase} from '../lib/supaBaseClient';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types';
+import SuccessModal from './SuccessModal';
 
 type Task = {
   id: string;
@@ -32,6 +33,8 @@ const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
     useNavigation<
       NativeStackNavigationProp<RootStackParamList, 'MainScreen'>
     >();
+
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const fetchTasks = async () => {
     const {
@@ -93,6 +96,7 @@ const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
     if (error) {
       console.log(error);
     }
+    setSuccessModalVisible(true);
     await fetchTasks();
   };
 
@@ -120,6 +124,15 @@ const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
       ) : (
         <Text style={styles.noTasks}>No tasks found.</Text>
       )}
+      <SuccessModal
+        visible={successModalVisible}
+        title="Task Deleted"
+        message="The task has been deleted."
+        onClose={() => {
+          setSuccessModalVisible(false);
+          navigation.navigate('MainScreen');
+        }}
+      />
     </ScrollView>
   );
 };

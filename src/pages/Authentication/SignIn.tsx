@@ -18,19 +18,20 @@ import {RootStackParamList} from '../../types/types';
 import AuthenticationStyles from './AuthenticationStyles';
 import {supabase} from '../../lib/supaBaseClient';
 import linking from '../../Navigation/Linking';
+import SuccessModal from '../../components/SuccessModal';
 
 const SignIn = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const handleSignIn = async () => {
     const {error} = await supabase.auth.signInWithPassword({email, password});
     if (error) Alert.alert(error.message);
     else {
-      Alert.alert('Signed In Successfully!');
-      navigation.navigate('MainScreen');
+      setSuccessModalVisible(true);
     }
   };
 
@@ -106,6 +107,15 @@ const SignIn = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <SuccessModal
+        visible={successModalVisible}
+        title="Signed In"
+        message="You have signed in."
+        onClose={() => {
+          setSuccessModalVisible(false);
+          navigation.navigate('MainScreen');
+        }}
+      />
     </SafeAreaView>
   );
 };

@@ -72,7 +72,9 @@ const DailyTasksComponent = ({
           imagePath={Images.bin}
           width={45}
           height={42}
-          onPress={() => deleteFunction(task_id)}
+          onPress={() => {
+            deleteFunction(task_id);
+          }}
         />
       </View>
     </View>
