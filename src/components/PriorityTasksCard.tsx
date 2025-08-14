@@ -1,6 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Images from '../assets/Images'; // adjust path as needed
+import {Button2} from './Button';
 
 type Subtask = {
   id: string;
@@ -16,6 +18,7 @@ type PriorityTaskCardProps = {
   due_date?: string;
   subtasks?: Subtask[];
   priorityTaskDetails: (id: string) => void;
+  onDelete?: (id: string) => void;
 };
 
 const PriorityTaskCard = ({
@@ -25,6 +28,7 @@ const PriorityTaskCard = ({
   subtasks = [],
   priorityTaskDetails,
   task_id,
+  onDelete,
 }: PriorityTaskCardProps) => {
   const completedCount = subtasks.filter(s => s.is_completed).length;
   const total = subtasks.length;
@@ -57,9 +61,21 @@ const PriorityTaskCard = ({
       <LinearGradient colors={['#00C9FF', '#9256F5']} style={styles.leftBar} />
 
       <View style={styles.content}>
-        <TouchableOpacity onPress={() => priorityTaskDetails(task_id)}>
-          <Text style={styles.heading}>{task_name}</Text>
-        </TouchableOpacity>
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => priorityTaskDetails(task_id)}>
+            <Text style={styles.heading}>{task_name}</Text>
+          </TouchableOpacity>
+
+          {onDelete && (
+            <Button2
+              imagePath={Images.bin}
+              width={45}
+              height={42}
+              onPress={() => onDelete(task_id)}
+            />
+          )}
+        </View>
+
         <PriorityTag />
         <Text style={styles.date}>
           {due_date
@@ -111,11 +127,20 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   heading: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 6,
+  },
+  deleteIcon: {
+    width: 20,
+    height: 20,
   },
   priorityTag: {
     borderWidth: 1,
@@ -158,7 +183,6 @@ const styles = StyleSheet.create({
   noSubtasks: {
     color: '#AAA',
     fontSize: 15,
-
     fontStyle: 'italic',
   },
 });

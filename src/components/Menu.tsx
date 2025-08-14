@@ -7,6 +7,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types';
 import {supabase} from '../lib/supaBaseClient';
 import SuccessModal from './SuccessModal';
+import ConfirmationModal from './ConfirmationModal';
 
 type MainScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -16,15 +17,17 @@ type MainScreenNavigationProp = NativeStackNavigationProp<
 const AppMenu = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation<MainScreenNavigationProp>();
+
   const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [logoutConfirmVisible, setLogoutConfirmVisible] = useState(false);
 
   const handleRefresh = () => {
     setMenuVisible(false);
     navigation.replace('MainScreen');
   };
 
-  const handleSignOut = async () => {
-    setMenuVisible(false);
+  const handleSignOutConfirm = async () => {
+    setLogoutConfirmVisible(false);
     const {error} = await supabase.auth.signOut();
     if (error) {
       console.error('Error signing out:', error.message);
@@ -39,6 +42,7 @@ const AppMenu = () => {
         <Image source={{uri: Images.hamburger}} style={styles.hamburgerIcon} />
       </TouchableOpacity>
 
+      {/* Menu Modal */}
       <Modal
         isVisible={menuVisible}
         onBackdropPress={() => setMenuVisible(false)}
@@ -52,12 +56,28 @@ const AppMenu = () => {
             <Text style={styles.menuText}>Refresh</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={handleSignOut}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              setMenuVisible(false);
+              setTimeout(() => setLogoutConfirmVisible(true), 300); // delay for smooth transition
+            }}>
             <Image source={{uri: Images.logOutIcon}} style={styles.menuIcon} />
             <Text style={styles.menuText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
       </Modal>
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmationModal
+        visible={logoutConfirmVisible}
+        title="Sign Out"
+        message="Are you sure you want to sign out?"
+        onCancel={() => setLogoutConfirmVisible(false)}
+        onConfirm={handleSignOutConfirm}
+      />
+
+      {/* Success Modal */}
       <SuccessModal
         visible={successModalVisible}
         title="Signed Out"

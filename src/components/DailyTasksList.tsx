@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types';
 import SuccessModal from './SuccessModal';
+import ConfirmationModal from './ConfirmationModal';
 
 type Task = {
   id: string;
@@ -28,6 +29,8 @@ interface DailyTasksListProps {
 const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const navigation =
     useNavigation<
@@ -87,17 +90,29 @@ const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
     );
   }
 
+  const requestDeleteTask = (taskId: string) => {
+    setSelectedTaskId(taskId);
+    setConfirmModalVisible(true);
+  };
+
   const handleEditTask = (taskId: string, taskType: 'daily' | 'priority') => {
     navigation.navigate('EditTask', {taskId, taskType});
   };
 
-  const handleDeleteTask = async (taskId: string) => {
-    const {error} = await supabase.from('tasks').delete().eq('id', taskId);
+  const handleDeleteTask = async () => {
+    if (!selectedTaskId) return;
+    const {error} = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', selectedTaskId);
     if (error) {
       console.log(error);
+    } else {
+      setSuccessModalVisible(true);
+      await fetchTasks();
     }
-    setSuccessModalVisible(true);
-    await fetchTasks();
+    setConfirmModalVisible(false);
+    setSelectedTaskId(null);
   };
 
   const handleDailyTaskDetails = (taskId: string) => {
@@ -117,7 +132,7 @@ const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
             task_id={task.id}
             is_completed={task.is_completed}
             editFunction={() => handleEditTask(task.id, task.type)}
-            deleteFunction={() => handleDeleteTask(task.id)}
+            deleteFunction={() => requestDeleteTask(task.id)}
             dailyTaskDetails={() => handleDailyTaskDetails(task.id)}
           />
         ))
@@ -132,6 +147,14 @@ const DailyTasksList: React.FC<DailyTasksListProps> = ({searchQuery}) => {
           setSuccessModalVisible(false);
           navigation.navigate('MainScreen');
         }}
+      />
+
+      <ConfirmationModal
+        visible={confirmModalVisible}
+        title="Delete Task"
+        message="Are you sure you want to delete this task?"
+        onCancel={() => setConfirmModalVisible(false)}
+        onConfirm={handleDeleteTask}
       />
     </ScrollView>
   );

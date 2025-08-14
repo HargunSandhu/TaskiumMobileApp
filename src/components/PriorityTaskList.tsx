@@ -5,6 +5,8 @@ import {supabase} from '../lib/supaBaseClient';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types';
+import ConfirmationModal from './ConfirmationModal';
+import SuccessModal from './SuccessModal';
 
 type SubTask = {
   id: string;
@@ -31,23 +33,23 @@ const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
     useNavigation<
       NativeStackNavigationProp<RootStackParamList, 'MainScreen'>
     >();
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [confirmationModalVisible, setConfirmationModalVisible] =
+    useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const fetchTasks = async () => {
+    setLoading(true);
     const {
       data: {user},
       error: userError,
     } = await supabase.auth.getUser();
 
-    if (userError) {
-      console.error('Error fetching user:', userError.message);
-      setLoading(false);
-      return;
-    }
-
-    if (!user) {
-      console.warn('No user is currently signed in.');
+    if (userError || !user) {
+      console.error(userError?.message || 'No user signed in');
       setTasks([]);
       setLoading(false);
       return;
@@ -60,36 +62,25 @@ const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
       .eq('type', 'priority')
       .order('id', {ascending: true});
 
-    if (searchQuery.trim() !== '') {
+    if (searchQuery.trim()) {
       query = query.ilike('task_name', `%${searchQuery}%`);
     }
 
     const {data: taskData, error: taskError} = await query;
-
     if (taskError || !taskData) {
-      console.error('Error fetching tasks:', taskError?.message);
+      console.error(taskError?.message);
       setLoading(false);
       return;
     }
 
     const tasksWithSubtasks = await Promise.all(
       taskData.map(async task => {
-        const {data: subtasks, error: subError} = await supabase
+        const {data: subtasks} = await supabase
           .from('subtasks')
           .select('*')
           .eq('task_id', task.id);
 
-        if (subError) {
-          console.error(
-            `Error fetching subtasks for task ${task.id}:`,
-            subError.message,
-          );
-        }
-
-        return {
-          ...task,
-          subtasks: subtasks || [],
-        } as Task;
+        return {...task, subtasks: subtasks || []} as Task;
       }),
     );
 
@@ -101,6 +92,26 @@ const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
     fetchTasks();
   }, [searchQuery]);
 
+  const confirmDelete = (taskId: string) => {
+    setSelectedTaskId(taskId);
+    setConfirmationModalVisible(true);
+  };
+
+  const handleDeleteTask = async () => {
+    if (!selectedTaskId) return;
+    const {error} = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', selectedTaskId);
+    if (error) {
+      console.error('Error deleting task:', error.message);
+    }
+    setConfirmationModalVisible(false);
+    setSelectedTaskId(null);
+    setSuccessModalVisible(true);
+    fetchTasks();
+  };
+
   if (loading) {
     return (
       <ActivityIndicator size="large" color="#9B7CF9" style={{marginTop: 50}} />
@@ -110,8 +121,7 @@ const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}>
+      keyboardShouldPersistTaps="handled">
       {tasks.length > 0 ? (
         tasks.map(task => (
           <PriorityTaskCard
@@ -124,11 +134,30 @@ const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
             priorityTaskDetails={() =>
               navigation.navigate('PriorityTaskDetails', {taskId: task.id})
             }
+            onDelete={() => confirmDelete(task.id)}
           />
         ))
       ) : (
         <Text style={styles.noTasks}>No tasks found.</Text>
       )}
+
+      <ConfirmationModal
+        visible={confirmationModalVisible}
+        onCancel={() => setConfirmationModalVisible(false)}
+        onConfirm={handleDeleteTask}
+        title="Delete Task"
+        message="Are you sure you want to delete this task?"
+      />
+
+      <SuccessModal
+        visible={successModalVisible}
+        title="Task Deleted"
+        message="The task has been deleted."
+        onClose={() => {
+          setSuccessModalVisible(false);
+          navigation.navigate('MainScreen');
+        }}
+      />
     </ScrollView>
   );
 };
