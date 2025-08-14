@@ -13,6 +13,7 @@ import Images from '../assets/Images';
 import TaskSelector from '../components/TaskSelector';
 import DailyTasksList from '../components/DailyTasksList';
 import PriorityTasksList from '../components/PriorityTaskList';
+import Menu from '../components/Menu';
 
 const Dashboard = () => {
   const [taskType, setTaskType] = useState<'daily' | 'priority'>('daily');
@@ -36,15 +37,9 @@ const Dashboard = () => {
           <Text style={styles.greeting}>Hello User</Text>
           <Text style={styles.date}>{currentDate}</Text>
         </View>
-        <TouchableOpacity>
-          <Image
-            source={{uri: Images.hamburger}}
-            style={{width: 30, height: 30}}
-          />
-        </TouchableOpacity>
+        <Menu />
       </View>
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           placeholder="Search"
@@ -58,10 +53,8 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Task Type Selector */}
       <TaskSelector selected={taskType} setSelected={setTaskType} />
 
-      {/* Render Tasks with Search Query */}
       {taskType === 'daily' && <DailyTasksList searchQuery={searchQuery} />}
       {taskType === 'priority' && (
         <PriorityTasksList searchQuery={searchQuery} />

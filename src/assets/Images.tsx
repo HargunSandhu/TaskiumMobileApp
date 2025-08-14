@@ -20,6 +20,10 @@ const Images = {
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//expandArrow.png',
   gradientTick:
     'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images//gradientTick.png',
+  logOutIcon:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images/logOutIcon.png',
+  refreshIcon:
+    'https://ohegciuzbnobpqonduik.supabase.co/storage/v1/object/public/images/refreshIcon.png',
 };
 
 export default Images;

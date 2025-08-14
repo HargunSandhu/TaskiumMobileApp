@@ -99,7 +99,7 @@ const PriorityTasksList: React.FC<PriorityTasksListProps> = ({searchQuery}) => {
 
   useEffect(() => {
     fetchTasks();
-  }, [searchQuery]); // refetch on search change
+  }, [searchQuery]);
 
   if (loading) {
     return (
